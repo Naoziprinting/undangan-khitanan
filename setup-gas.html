@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Setup Google Apps Script</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .guide-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .guide-step {
+            margin-bottom: 40px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .step-content h3 {
+            display: inline-block;
+            margin: 0;
+        }
+        
+        .step-image {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .step-image img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .image-placeholder {
+            background-color: #f5f5f5;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 60px 20px;
+            text-align: center;
+            color: #666;
+        }
+        
+        .image-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+        
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+        }
+        
+        .note {
+            background-color: #e8f4fd;
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        
+        .back-button {
+            display: inline-block;
+            margin-top: 30px;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .back-button i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <h1><i class="fab fa-google"></i> Panduan Setup Google Apps Script</h1>
+        <p class="section-subtitle">Ikuti langkah-langkah berikut untuk menghubungkan website dengan Google Sheets</p>
+        
+        <div class="guide-step">
+            <div class="step-header">
+                <span class="step-number">1</span>
+                <h3>Buat Google Sheet Baru</h3>
+            </div>
+            <div class="step-content">
+                <p>Buka <a href="https://sheets.google.com" target="_blank">Google Sheets</a> dan buat spreadsheet baru:</p>
+                <div class="step-image">
+                    <div class="image-placeholder">
+                        <i class="fas fa-file-excel"></i>
+                        <p>Contoh tampilan Google Sheets baru</p>
+                    </div>
+                </div>
+                <p>Beri nama file, contoh: <strong>"Database Undangan Khitanan"</strong></p>
+            </div>
+        </div>
+        
+        <div class="guide-step">
+            <div class="step-header">
+                <span class="step-number">2</span>
+                <h3>Buka Google Apps Script</h3>
+            </div>
+            <div class="step-content">
+                <p>Dari menu Google Sheets, pilih:</p>
+                <p><strong>Extensions → Apps Script</strong></p>
+                <div class="step-image">
+                    <div class="image-placeholder">
+                        <i class="fas fa-code"></i>
+                        <p>Menu Extensions → Apps Script</p>
+                    </div>
+                </div>
+                <p>Ini akan membuka editor Google Apps Script di tab baru.</p>
+            </div>
+        </div>
+        
+        <div class="guide-step">
+            <div class="step-header">
+                <span class="step-number">3</span>
+                <h3>Salin Kode ke Editor</h3>
+            </div>
+            <div class="step-content">
+                <p>Hapus semua kode yang ada di editor, lalu salin kode dari file <code>google-apps-script.js</code>:</p>
+                <div class="code-block">
+// Google Apps Script untuk Undangan Khitanan
+// Deploy sebagai Web App untuk menerima data dari website
+
+const SHEET_NAME_INVITATIONS = "Invitations";
+const SHEET_NAME_GUESTS = "Guests";
+const SHEET_NAME_MESSAGES = "Messages";
+
+function doPost(e) {
+  // ... kode lengkap
+}
+                </div>
+                <div class="note">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Kode lengkap ada di file <code>google-apps-script.js</code> yang sudah disediakan.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="guide-step">
+            <div class="step-header">
+                <span class="step-number">4</span>
+                <h3>Deploy sebagai Web App</h3>
+            </div>
+            <div class="step-content">
+                <p>Klik tombol <strong>"Deploy"</strong> di atas editor, lalu pilih <strong>"New deployment"</strong>:</p>
+                <div class="step-image">
+                    <div class="image-placeholder">
+                        <i class="fas fa-rocket"></i>
+                        <p>Tombol Deploy → New deployment</p>
+                    </div>
+                </div>
+                <p>Isi form deployment:</p>
+                <ul>
+                    <li><strong>Type:</strong> Web app</li>
+                    <li><strong>Description:</strong> Undangan Khitanan API</li>
+                    <li><strong>Execute as:</strong> Me (akun Anda)</li>
+                    <li><strong>Who has access:</strong> Anyone (agar website bisa mengakses)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="guide-step">
+            <div class="step-header">
+                <span class="step-number">5</span>
+                <h3>Dapatkan Web App URL</h3>
+            </div>
+            <div class="step-content">
+                <p>Setelah klik "Deploy", akan muncul popup dengan Web App URL:</p>
+                <div class="step-image">
+                    <div class="image-placeholder">
+                        <i class="fas fa-link"></i>
+                        <p>Contoh: https://script.google.com/macros/s/ABC123XYZ/exec</p>
+                    </div>
+                </div>
+                <p><strong>Salin URL ini</strong> — Anda akan membutuhkannya untuk website.</p>
+                <div class="warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Pastikan Anda menyalin URL yang lengkap termasuk <code>/exec</code> di akhir.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="guide-step">
+            <div class="step-header">
+                <span class="step-number">6</span>
+                <h3>Masukkan URL ke Website</h3>
+            </div>
+            <div class="step-content">
+                <p>Kembali ke website undangan Anda, dan masukkan URL tadi di form konfigurasi:</p>
+                <div class="step-image">
+                    <div class="image-placeholder">
+                        <i class="fas fa-cog"></i>
+                        <p>Form konfigurasi Google Apps Script URL</p>
+                    </div>
+                </div>
+                <p>Setelah URL disimpan, website akan terhubung otomatis dengan Google Sheets.</p>
+            </div>
+        </div>
+        
+        <div class="guide-step">
+            <div class="step-header">
+                <span class="step-number">7</span>
+                <h3>Test Koneksi</h3>
+            </div>
+            <div class="step-content">
+                <p>Klik tombol <strong>"Test Koneksi"</strong> untuk memastikan website terhubung dengan baik:</p>
+                <div class="step-image">
+                    <div class="image-placeholder">
+                        <i class="fas fa-plug"></i>
+                        <p>Tombol Test Koneksi</p>
+                    </div>
+                </div>
+                <p>Jika berhasil, status akan berubah menjadi <strong>"Terhubung ke Google Sheets"</strong>.</p>
+                <div class="note">
+                    <i class="fas fa-check-circle"></i>
+                    <p>Selesai! Sekarang semua data undangan, tamu, dan ucapan akan otomatis tersimpan di Google Sheets Anda.</p>
+                </div>
+            </div>
+        </div>
+        
+        <a href="index.html" class="back-button">
+            <i class="fas fa-arrow-left"></i> Kembali ke Website
+        </a>
+    </div>
+</body>
+</html>
