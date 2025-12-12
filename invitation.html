@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan Khitanan</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Great+Vibes&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body class="guest-page">
+    <!-- Audio untuk backsound -->
+    <audio id="backgroundMusic" loop>
+        <source src="assets/music/background-music.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+    
+    <!-- Music Control -->
+    <div class="music-control">
+        <button id="musicToggle">
+            <i class="fas fa-music"></i>
+            <span id="musicStatus">Musik: ON</span>
+        </button>
+        <button id="volumeControl">
+            <i class="fas fa-volume-up"></i>
+        </button>
+    </div>
+    
+    <!-- Undangan Container -->
+    <main class="invitation-container">
+        <!-- Header dengan ornament -->
+        <div class="ornament-top">
+            <div class="ornament-line"></div>
+            <div class="ornament-center">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="ornament-line"></div>
+        </div>
+        
+        <!-- Salam Pembuka -->
+        <section class="opening-section">
+            <div class="container">
+                <div class="bismillah">
+                    <i class="fas fa-quran"></i>
+                    <h2>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</h2>
+                    <p>Assalamu'alaikum Warahmatullahi Wabarakatuh</p>
+                </div>
+                
+                <div class="invitation-header">
+                    <h1>Undangan Khitanan</h1>
+                    <div class="header-ornament">
+                        <div class="ornament-line-small"></div>
+                        <i class="fas fa-mosque"></i>
+                        <div class="ornament-line-small"></div>
+                    </div>
+                    <p>Dengan penuh rasa syukur kehadirat Allah SWT, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara khitanan putra kami</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Detail Anak & Acara -->
+        <section class="child-section">
+            <div class="container">
+                <div class="child-profile">
+                    <div class="child-photo">
+                        <!-- Placeholder untuk foto anak -->
+                        <div class="photo-placeholder">
+                            <i class="fas fa-child"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="child-details">
+                        <h2 id="childNameDisplay">Muhammad Al-Fatih</h2>
+                        <div class="child-age">
+                            <i class="fas fa-birthday-cake"></i>
+                            <span id="childAgeDisplay">7 Tahun</span>
+                        </div>
+                        
+                        <div class="parents-info">
+                            <h3>Putra dari:</h3>
+                            <p id="parentNameDisplay">Bapak Ahmad & Ibu Siti</p>
+                        </div>
+                        
+                        <div class="guest-greeting">
+                            <h3>Kepada Yth:</h3>
+                            <p class="guest-name" id="guestNameDisplay">Bapak/Ibu/Saudara/i</p>
+                            <p class="guest-instruction">(Nama Anda muncul otomatis dari link undangan)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Detail Acara -->
+        <section class="event-details-section">
+            <div class="container">
+                <h2 class="section-title">Detail Acara</h2>
+                
+                <div class="event-details-grid">
+                    <div class="event-detail-card">
+                        <div class="detail-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="detail-content">
+                            <h3>Hari & Tanggal</h3>
+                            <p id="eventDateDisplay">Sabtu, 15 Juli 2023</p>
+                            <p id="eventTimeDisplay">Pukul 09.00 - Selesai</p>
+                        </div>
+                    </div>
+                    
+                    <div class="event-detail-card">
+                        <div class="detail-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="detail-content">
+                            <h3>Lokasi Acara</h3>
+                            <p id="eventLocationDisplay">Jl. Kenangan Indah No. 123, Kel. Bahagia, Kec. Sejahtera, Kota Bandung</p>
+                            <a href="#" id="mapsLink" class="maps-link" target="_blank">
+                                <i class="fas fa-map"></i> Buka di Google Maps
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="event-detail-card">
+                        <div class="detail-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="detail-content">
+                            <h3>Jadwal Acara</h3>
+                            <ul class="event-schedule">
+                                <li><span>09.00 - 10.00</span> Sambutan & Doa</li>
+                                <li><span>10.00 - 11.00</span> Prosesi Khitanan</li>
+                                <li><span>11.00 - 13.00</span> Syukuran & Makan Siang</li>
+                                <li><span>13.00 - Selesai</span> Silaturahmi</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="event-detail-card">
+                        <div class="detail-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="detail-content">
+                            <h3>Informasi Penting</h3>
+                            <ul class="event-info">
+                                <li><i class="fas fa-check-circle"></i> Acara terbuka untuk keluarga dan teman</li>
+                                <li><i class="fas fa-check-circle"></i> Dress code: Baju muslim / formal</li>
+                                <li><i class="fas fa-check-circle"></i> Parkir tersedia di halaman rumah</li>
+                                <li><i class="fas fa-check-circle"></i> Konfirmasi kehadiran di bawah</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- RSVP & Konfirmasi -->
+        <section class="rsvp-section">
+            <div class="container">
+                <h2 class="section-title">Konfirmasi Kehadiran</h2>
+                <p class="section-subtitle">Mohon konfirmasi kehadiran Anda melalui formulir di bawah ini</p>
+                
+                <div class="rsvp-form-container">
+                    <form id="rsvpForm">
+                        <div class="form-group">
+                            <label for="confirmName">Nama Lengkap</label>
+                            <input type="text" id="confirmName" value="" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="attendanceStatus">Konfirmasi Kehadiran</label>
+                            <div class="attendance-options">
+                                <label class="attendance-option">
+                                    <input type="radio" name="attendance" value="hadir" checked>
+                                    <div class="option-content">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Ya, saya akan hadir</span>
+                                    </div>
+                                </label>
+                                
+                                <label class="attendance-option">
+                                    <input type="radio" name="attendance" value="mungkin">
+                                    <div class="option-content">
+                                        <i class="fas fa-question-circle"></i>
+                                        <span>Mungkin hadir</span>
+                                    </div>
+                                </label>
+                                
+                                <label class="attendance-option">
+                                    <input type="radio" name="attendance" value="tidak">
+                                    <div class="option-content">
+                                        <i class="fas fa-times-circle"></i>
+                                        <span>Tidak dapat hadir</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="guestCount">Jumlah Orang yang Hadir</label>
+                            <select id="guestCount">
+                                <option value="1">1 Orang (Hanya saya)</option>
+                                <option value="2">2 Orang</option>
+                                <option value="3">3 Orang</option>
+                                <option value="4">4 Orang</option>
+                                <option value="5">5 Orang atau lebih</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="guestMessage">Ucapan & Doa</label>
+                            <textarea id="guestMessage" rows="4" placeholder="Tuliskan ucapan dan doa untuk putra kami..."></textarea>
+                        </div>
+                        
+                        <div class="form-submit">
+                            <button type="submit" class="btn-rsvp">
+                                <i class="fas fa-paper-plane"></i> Kirim Konfirmasi
+                            </button>
+                            <p class="form-note">Konfirmasi Anda akan tersimpan di Google Sheets dan dapat dilihat oleh tuan rumah.</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Buku Tamu / Ucapan -->
+        <section class="guestbook-section">
+            <div class="container">
+                <h2 class="section-title">Buku Tamu</h2>
+                <p class="section-subtitle">Ucapan dan doa dari para tamu undangan</p>
+                
+                <div class="guestbook-container">
+                    <div class="guestbook-messages" id="guestbookMessages">
+                        <!-- Ucapan akan dimuat dari Google Sheets -->
+                        <div class="message-loading">
+                            <i class="fas fa-spinner fa-spin"></i> Memuat ucapan tamu...
+                        </div>
+                    </div>
+                    
+                    <div class="add-message">
+                        <h3><i class="fas fa-edit"></i> Tambah Ucapan</h3>
+                        <p>Anda juga dapat menambahkan ucapan di sini:</p>
+                        
+                        <div class="message-form">
+                            <div class="form-group">
+                                <input type="text" id="messageName" placeholder="Nama Anda" value="" readonly>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="newMessage" rows="3" placeholder="Tulis ucapan dan doa Anda di sini..."></textarea>
+                            </div>
+                            <button id="submitMessageBtn" class="btn-submit-message">
+                                <i class="fas fa-paper-plane"></i> Kirim Ucapan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Penutup & Doa -->
+        <section class="closing-section">
+            <div class="container">
+                <div class="closing-content">
+                    <div class="closing-ornament">
+                        <i class="fas fa-heart"></i>
+                        <i class="fas fa-dove"></i>
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    
+                    <div class="closing-message">
+                        <h2>Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.</h2>
+                        <p>Wassalamu'alaikum Warahmatullahi Wabarakatuh</p>
+                    </div>
+                    
+                    <div class="closing-signature">
+                        <h3>Keluarga Besar</h3>
+                        <p id="familyNameDisplay">Ahmad & Siti</p>
+                    </div>
+                    
+                    <div class="closing-contact">
+                        <h4>Kontak Panitia:</h4>
+                        <p id="contactPhoneDisplay">0812-3456-7890 (Ahmad)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Ornament Bawah -->
+        <div class="ornament-bottom">
+            <div class="ornament-line"></div>
+            <div class="ornament-center">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="ornament-line"></div>
+        </div>
+    </main>
+    
+    <!-- Footer Tamu -->
+    <footer class="guest-footer">
+        <div class="container">
+            <p>Undangan digital ini dibuat dengan <i class="fas fa-heart"></i> menggunakan GitHub Pages & Google Sheets</p>
+            <p class="footer-note">© 2023 Undangan Khitanan Digital. Link ini khusus untuk <span id="footerGuestName">Anda</span>.</p>
+            <div class="footer-share">
+                <p>Bagikan undangan ini:</p>
+                <div class="share-buttons">
+                    <button class="share-btn whatsapp">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </button>
+                    <button class="share-btn telegram">
+                        <i class="fab fa-telegram"></i> Telegram
+                    </button>
+                    <button class="share-btn copy-link">
+                        <i class="fas fa-link"></i> Salin Link
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="script.js"></script>
+    <script src="sheets-handler.js"></script>
+    <script>
+        // Script khusus halaman tamu
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ambil nama tamu dari parameter URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const guestName = urlParams.get('guest') || 'Tamu Undangan';
+            
+            // Tampilkan nama tamu di berbagai bagian
+            document.getElementById('guestNameDisplay').textContent = guestName;
+            document.getElementById('confirmName').value = guestName;
+            document.getElementById('messageName').value = guestName;
+            document.getElementById('footerGuestName').textContent = guestName;
+            
+            // Mulai backsound otomatis (dengan interaksi pengguna)
+            document.body.addEventListener('click', function initMusic() {
+                const music = document.getElementById('backgroundMusic');
+                music.volume = 0.5;
+                music.play().catch(e => console.log("Autoplay blocked:", e));
+                document.body.removeEventListener('click', initMusic);
+            });
+            
+            // Kontrol musik
+            const musicToggle = document.getElementById('musicToggle');
+            const musicStatus = document.getElementById('musicStatus');
+            const music = document.getElementById('backgroundMusic');
+            
+            musicToggle.addEventListener('click', function() {
+                if (music.paused) {
+                    music.play();
+                    musicStatus.textContent = 'Musik: ON';
+                } else {
+                    music.pause();
+                    musicStatus.textContent = 'Musik: OFF';
+                }
+            });
+            
+            // Load data undangan dari Google Sheets
+            loadInvitationData();
+            loadGuestMessages();
+        });
+        
+        // Fungsi untuk memuat data undangan
+        async function loadInvitationData() {
+            try {
+                // Ambil data dari Google Sheets berdasarkan parameter URL
+                // Implementasi akan di sheets-handler.js
+                console.log("Loading invitation data...");
+            } catch (error) {
+                console.error("Error loading invitation data:", error);
+            }
+        }
+        
+        // Fungsi untuk memuat ucapan tamu
+        async function loadGuestMessages() {
+            try {
+                // Ambil data ucapan dari Google Sheets
+                // Implementasi akan di sheets-handler.js
+                console.log("Loading guest messages...");
+            } catch (error) {
+                console.error("Error loading guest messages:", error);
+            }
+        }
+    </script>
+</body>
+</html>
