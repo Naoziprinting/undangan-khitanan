@@ -132,6 +132,62 @@
         </div>
     </section>
 
+    <!-- Konfigurasi Google Apps Script URL -->
+<section class="config-section" id="config">
+    <div class="container">
+        <h2 class="section-title">Konfigurasi Google Sheets</h2>
+        <p class="section-subtitle">Masukkan URL Google Apps Script Web App Anda</p>
+        
+        <div class="config-container">
+            <div class="config-form">
+                <div class="form-group">
+                    <label for="gasUrl">
+                        <i class="fab fa-google"></i> Google Apps Script Web App URL
+                    </label>
+                    <input type="url" id="gasUrl" placeholder="https://script.google.com/macros/s/.../exec">
+                    <p class="form-help">
+                        Cara mendapatkan URL: 
+                        <a href="#" id="showGasGuide">Klik untuk panduan</a>
+                    </p>
+                </div>
+                
+                <div class="form-group">
+                    <button id="saveGasUrl" class="btn-config">
+                        <i class="fas fa-save"></i> Simpan URL
+                    </button>
+                    <button id="testConnection" class="btn-test">
+                        <i class="fas fa-plug"></i> Test Koneksi
+                    </button>
+                </div>
+                
+                <div class="connection-status" id="connectionStatus">
+                    <div class="status-indicator offline"></div>
+                    <span>Status: Belum terhubung ke Google Sheets</span>
+                </div>
+            </div>
+            
+            <div class="config-guide" id="gasGuide">
+                <h3><i class="fas fa-info-circle"></i> Panduan Setup Google Apps Script</h3>
+                <ol>
+                    <li>Buka Google Sheet Anda</li>
+                    <li>Klik <strong>Extensions > Apps Script</strong></li>
+                    <li>Salin kode dari file <code>google-apps-script.js</code> ke editor</li>
+                    <li>Klik <strong>Deploy > New deployment</strong></li>
+                    <li>Pilih <strong>Web app</strong> sebagai type</li>
+                    <li>Set <strong>Execute as</strong> ke "Me"</li>
+                    <li>Set <strong>Who has access</strong> ke "Anyone"</li>
+                    <li>Klik <strong>Deploy</strong> dan salin URL yang diberikan</li>
+                    <li>Tempelkan URL di atas dan klik <strong>Simpan URL</strong></li>
+                </ol>
+                <div class="guide-note">
+                    <i class="fas fa-lightbulb"></i>
+                    <p>Data akan otomatis tersimpan ke Google Sheets setelah konfigurasi ini.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    
     <!-- Bagian Pembuatan Link Tamu -->
     <section class="guest-link-section">
         <div class="container">
