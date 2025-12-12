@@ -45,3 +45,27 @@ const CONFIG = {
     API_KEY: 'YOUR_GOOGLE_API_KEY_HERE',
     // ...
 };
+
+## Cara Deployment ke GitHub:
+
+1. **Buat repository baru** di GitHub dengan nama `undangan-khitanan`
+2. **Upload semua file** ke repository
+3. **Aktifkan GitHub Pages**:
+   - Pergi ke Settings > Pages
+   - Pilih branch `main` sebagai source
+   - Pilih folder `/root`
+   - Klik Save
+4. **Website akan live** di: `https://[username-anda].github.io/undangan-khitanan/`
+
+## Fitur yang Diimplementasikan:
+
+✅ **Undangan Khitanan** - Desain elegan dengan tema Islami  
+✅ **Hosting GitHub** - Gratis dan mudah di-deploy  
+✅ **Backsound** - Musik latar dengan kontrol on/off  
+✅ **Nama Tamu Otomatis** - Berdasarkan parameter URL  
+✅ **Google Sheets Integration** - Untuk database tamu dan ucapan  
+✅ **Form Pembuat Link** - Untuk pemilik acara membuat link personal  
+✅ **RSVP & Buku Tamu** - Tamu bisa konfirmasi dan kirim ucapan  
+✅ **Responsive Design** - Tampil bagus di semua perangkat  
+
+Website ini siap digunakan dengan hanya mengganti konfigurasi Google Sheets dan konten sesuai kebutuhan acara Anda!
