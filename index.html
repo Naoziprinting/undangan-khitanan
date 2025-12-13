@@ -14,9 +14,10 @@
     <header class="creator-header">
         <div class="container">
             <nav>
-                <h1 class="logo"><i class="fas fa-mosque"></i> Naozi Printing</h1>
+                <h1 class="logo"><i class="fas fa-mosque"></i> UndanganKhitanan.id</h1>
                 <div class="nav-links">
                     <a href="#home">Beranda</a>
+                    <a href="#config">Konfigurasi</a>
                     <a href="#create">Buat Undangan</a>
                     <a href="#guests">Data Tamu</a>
                     <a href="#messages">Ucapan</a>
@@ -30,23 +31,156 @@
         <div class="container">
             <div class="hero-content">
                 <h1>Buat Undangan Khitanan Digital yang Elegan</h1>
-                <p>Undangan digital personal dengan backsound, database tamu, dan sistem RSVP otomatis. Gratis dan mudah digunakan.</p>
+                <p>Undangan digital personal dengan backsound, database Google Sheets, dan sistem RSVP otomatis. Gratis dan mudah digunakan.</p>
                 <div class="features">
                     <div class="feature">
                         <i class="fas fa-music"></i>
                         <span>Backsound Islami</span>
                     </div>
                     <div class="feature">
+                        <i class="fab fa-google-drive"></i>
+                        <span>Google Sheets Database</span>
+                    </div>
+                    <div class="feature">
                         <i class="fas fa-link"></i>
                         <span>Link Personalisasi</span>
                     </div>
                     <div class="feature">
-                        <i class="fas fa-spreadsheet"></i>
-                        <span>Google Sheets Database</span>
-                    </div>
-                    <div class="feature">
                         <i class="fas fa-gift"></i>
                         <span>Ucapan Digital</span>
+                    </div>
+                </div>
+                
+                <div class="setup-guide">
+                    <h3><i class="fas fa-rocket"></i> Mulai Cepat</h3>
+                    <ol>
+                        <li>Konfigurasi Google Sheets terlebih dahulu</li>
+                        <li>Buat undangan digital Anda</li>
+                        <li>Buat link personal untuk tamu</li>
+                        <li>Bagikan dan pantau data secara real-time</li>
+                    </ol>
+                    <a href="#config" class="btn-start">
+                        <i class="fas fa-cogs"></i> Mulai Konfigurasi
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Konfigurasi Google Apps Script -->
+    <section class="config-section" id="config">
+        <div class="container">
+            <h2 class="section-title"><i class="fab fa-google"></i> Konfigurasi Google Sheets</h2>
+            <p class="section-subtitle">Hubungkan website dengan Google Sheets untuk menyimpan data</p>
+            
+            <div class="config-container">
+                <div class="config-form">
+                    <div class="form-group">
+                        <label for="gasUrl">
+                            <i class="fas fa-link"></i> Google Apps Script Web App URL
+                        </label>
+                        <input type="url" id="gasUrl" 
+                               placeholder="https://script.google.com/macros/s/.../exec"
+                               value="">
+                        <div class="form-help">
+                            <p><i class="fas fa-question-circle"></i> Cara mendapatkan URL:</p>
+                            <button type="button" id="showGasGuide" class="btn-guide">
+                                <i class="fas fa-book"></i> Lihat Panduan Lengkap
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button id="saveGasUrl" class="btn-config">
+                            <i class="fas fa-save"></i> Simpan URL
+                        </button>
+                        <button id="testConnection" class="btn-test">
+                            <i class="fas fa-plug"></i> Test Koneksi
+                        </button>
+                        <button id="openSheets" class="btn-sheets" style="display: none;">
+                            <i class="fas fa-external-link-alt"></i> Buka Sheets
+                        </button>
+                    </div>
+                    
+                    <div class="connection-status" id="connectionStatus">
+                        <div class="status-indicator offline" id="statusIndicator"></div>
+                        <span id="statusText">Status: Belum terhubung ke Google Sheets</span>
+                    </div>
+                    
+                    <div class="config-info" id="configInfo">
+                        <h4><i class="fas fa-info-circle"></i> Informasi Konfigurasi</h4>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Status Sheets:</span>
+                                <span class="info-value" id="sheetsStatus">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Invitations:</span>
+                                <span class="info-value" id="invitationsCount">0</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Tamu:</span>
+                                <span class="info-value" id="guestsCount">0</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Ucapan:</span>
+                                <span class="info-value" id="messagesCount">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="config-guide">
+                    <h3><i class="fas fa-info-circle"></i> Panduan Singkat</h3>
+                    <div class="quick-guide">
+                        <div class="guide-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Buat Google Sheet</h4>
+                                <p>Buka <a href="https://sheets.google.com" target="_blank">Google Sheets</a> dan buat spreadsheet baru</p>
+                            </div>
+                        </div>
+                        
+                        <div class="guide-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Buka Apps Script</h4>
+                                <p>Extensions → Apps Script</p>
+                            </div>
+                        </div>
+                        
+                        <div class="guide-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Salin Kode</h4>
+                                <p>Salin kode dari file <code>google-apps-script.js</code></p>
+                            </div>
+                        </div>
+                        
+                        <div class="guide-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Deploy Web App</h4>
+                                <p>Klik Deploy → New deployment → Web App</p>
+                            </div>
+                        </div>
+                        
+                        <div class="guide-step">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <h4>Salin URL</h4>
+                                <p>Salin Web App URL dan tempel di form sebelah</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="guide-actions">
+                        <a href="setup-guide.html" target="_blank" class="btn-detailed-guide">
+                            <i class="fas fa-external-link-alt"></i> Panduan Detail dengan Gambar
+                        </a>
+                        <button id="setupSheets" class="btn-setup-sheets">
+                            <i class="fas fa-magic"></i> Setup Sheets Otomatis
+                        </button>
                     </div>
                 </div>
             </div>
@@ -58,6 +192,11 @@
         <div class="container">
             <h2 class="section-title">Buat Undangan Anda</h2>
             <p class="section-subtitle">Isi formulir di bawah untuk membuat undangan digital yang personal</p>
+            
+            <div class="form-warning" id="formWarning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Harap konfigurasi Google Sheets terlebih dahulu di bagian atas sebelum membuat undangan.</p>
+            </div>
             
             <div class="form-container">
                 <form id="invitationForm">
@@ -79,7 +218,7 @@
                         </div>
                         <div class="form-group">
                             <label for="parentPhone"><i class="fas fa-phone"></i> Nomor Telepon</label>
-                            <input type="tel" id="parentPhone" placeholder="Nomor kontak" required>
+                            <input type="tel" id="parentPhone" placeholder="Contoh: 081234567890" required>
                         </div>
                     </div>
                     
@@ -100,13 +239,13 @@
                     </div>
                     
                     <div class="form-group full-width">
-                        <label><i class="fas fa-image"></i> Warna Tema Undangan</label>
+                        <label><i class="fas fa-palette"></i> Warna Tema Undangan</label>
                         <div class="color-picker">
-                            <div class="color-option" data-color="#2E7D32" style="background-color: #2E7D32;"></div>
-                            <div class="color-option" data-color="#1565C0" style="background-color: #1565C0;"></div>
-                            <div class="color-option" data-color="#6A1B9A" style="background-color: #6A1B9A;"></div>
-                            <div class="color-option" data-color="#C62828" style="background-color: #C62828;"></div>
-                            <div class="color-option" data-color="#FF8F00" style="background-color: #FF8F00;"></div>
+                            <div class="color-option" data-color="#2E7D32" style="background-color: #2E7D32;" title="Hijau"></div>
+                            <div class="color-option" data-color="#1565C0" style="background-color: #1565C0;" title="Biru"></div>
+                            <div class="color-option" data-color="#6A1B9A" style="background-color: #6A1B9A;" title="Ungu"></div>
+                            <div class="color-option" data-color="#C62828" style="background-color: #C62828;" title="Merah"></div>
+                            <div class="color-option" data-color="#FF8F00" style="background-color: #FF8F00;" title="Oranye"></div>
                         </div>
                     </div>
                     
@@ -119,85 +258,56 @@
                             <input type="checkbox" id="enableGuestBook" checked>
                             <label for="enableGuestBook">Aktifkan buku tamu digital</label>
                         </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="saveToSheets" checked>
+                            <label for="saveToSheets">Simpan data ke Google Sheets</label>
+                        </div>
                     </div>
                     
                     <div class="form-submit">
-                        <button type="submit" class="btn-create">
+                        <button type="submit" class="btn-create" id="btnCreateInvitation" disabled>
                             <i class="fas fa-magic"></i> Buat Undangan Sekarang
                         </button>
-                        <p class="form-note">Undangan Anda akan tersimpan otomatis di Google Sheets</p>
+                        <p class="form-note" id="formNote">Harap konfigurasi Google Sheets terlebih dahulu</p>
                     </div>
                 </form>
+            </div>
+            
+            <div class="invitation-preview" id="invitationPreview" style="display: none;">
+                <h3><i class="fas fa-eye"></i> Preview Undangan</h3>
+                <div class="preview-content">
+                    <div class="preview-header">
+                        <h4 id="previewChildName">Nama Anak</h4>
+                        <p id="previewEventDate">Tanggal Acara</p>
+                    </div>
+                    <div class="preview-actions">
+                        <button id="viewInvitation" class="btn-preview">
+                            <i class="fas fa-external-link-alt"></i> Lihat Undangan
+                        </button>
+                        <button id="copyInvitationLink" class="btn-preview">
+                            <i class="fas fa-copy"></i> Salin Link
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Konfigurasi Google Apps Script URL -->
-<section class="config-section" id="config">
-    <div class="container">
-        <h2 class="section-title">Konfigurasi Google Sheets</h2>
-        <p class="section-subtitle">Masukkan URL Google Apps Script Web App Anda</p>
-        
-        <div class="config-container">
-            <div class="config-form">
-                <div class="form-group">
-                    <label for="gasUrl">
-                        <i class="fab fa-google"></i> Google Apps Script Web App URL
-                    </label>
-                    <input type="url" id="gasUrl" placeholder="https://script.google.com/macros/s/.../exec">
-                    <p class="form-help">
-                        Cara mendapatkan URL: 
-                        <a href="#" id="showGasGuide">Klik untuk panduan</a>
-                    </p>
-                </div>
-                
-                <div class="form-group">
-                    <button id="saveGasUrl" class="btn-config">
-                        <i class="fas fa-save"></i> Simpan URL
-                    </button>
-                    <button id="testConnection" class="btn-test">
-                        <i class="fas fa-plug"></i> Test Koneksi
-                    </button>
-                </div>
-                
-                <div class="connection-status" id="connectionStatus">
-                    <div class="status-indicator offline"></div>
-                    <span>Status: Belum terhubung ke Google Sheets</span>
-                </div>
-            </div>
-            
-            <div class="config-guide" id="gasGuide">
-                <h3><i class="fas fa-info-circle"></i> Panduan Setup Google Apps Script</h3>
-                <ol>
-                    <li>Buka Google Sheet Anda</li>
-                    <li>Klik <strong>Extensions > Apps Script</strong></li>
-                    <li>Salin kode dari file <code>google-apps-script.js</code> ke editor</li>
-                    <li>Klik <strong>Deploy > New deployment</strong></li>
-                    <li>Pilih <strong>Web app</strong> sebagai type</li>
-                    <li>Set <strong>Execute as</strong> ke "Me"</li>
-                    <li>Set <strong>Who has access</strong> ke "Anyone"</li>
-                    <li>Klik <strong>Deploy</strong> dan salin URL yang diberikan</li>
-                    <li>Tempelkan URL di atas dan klik <strong>Simpan URL</strong></li>
-                </ol>
-                <div class="guide-note">
-                    <i class="fas fa-lightbulb"></i>
-                    <p>Data akan otomatis tersimpan ke Google Sheets setelah konfigurasi ini.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-    
     <!-- Bagian Pembuatan Link Tamu -->
-    <section class="guest-link-section">
+    <section class="guest-link-section" id="guests">
         <div class="container">
             <h2 class="section-title">Buat Link Undangan Personal untuk Tamu</h2>
             <p class="section-subtitle">Setiap tamu akan mendapatkan link unik dengan nama mereka</p>
             
+            <div class="section-notice" id="guestSectionNotice">
+                <i class="fas fa-info-circle"></i>
+                <p>Buat undangan terlebih dahulu sebelum membuat link untuk tamu.</p>
+            </div>
+            
             <div class="link-creator">
                 <div class="input-group">
-                    <input type="text" id="guestNameInput" placeholder="Masukkan nama tamu undangan">
-                    <button id="generateLinkBtn" class="btn-generate">
+                    <input type="text" id="guestNameInput" placeholder="Masukkan nama tamu undangan" disabled>
+                    <button id="generateLinkBtn" class="btn-generate" disabled>
                         <i class="fas fa-link"></i> Buat Link Personal
                     </button>
                 </div>
@@ -209,12 +319,26 @@
                         <button id="copyLinkBtn" class="btn-copy">
                             <i class="fas fa-copy"></i> Salin
                         </button>
+                        <button id="shareWhatsApp" class="btn-share whatsapp">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
                     </div>
                     <p class="link-info">Kirim link ini kepada tamu. Nama mereka akan muncul otomatis di undangan.</p>
                 </div>
                 
                 <div class="guest-table-container">
-                    <h3><i class="fas fa-users"></i> Daftar Tamu & Link Undangan</h3>
+                    <div class="table-header">
+                        <h3><i class="fas fa-users"></i> Daftar Tamu & Link Undangan</h3>
+                        <div class="table-actions">
+                            <button id="refreshGuests" class="btn-refresh">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <button id="exportGuests" class="btn-export">
+                                <i class="fas fa-download"></i> Export CSV
+                            </button>
+                        </div>
+                    </div>
+                    
                     <div class="table-wrapper">
                         <table id="guestTable">
                             <thead>
@@ -223,16 +347,31 @@
                                     <th>Nama Tamu</th>
                                     <th>Link Undangan</th>
                                     <th>Status</th>
+                                    <th>Jumlah</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="guestTableBody">
-                                <!-- Data tamu akan dimuat dari Google Sheets -->
                                 <tr class="loading-row">
-                                    <td colspan="5">Memuat data tamu...</td>
+                                    <td colspan="6">Buat undangan terlebih dahulu untuk melihat data tamu</td>
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                    
+                    <div class="table-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Total Tamu:</span>
+                            <span class="stat-value" id="totalGuestsTable">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Konfirmasi Hadir:</span>
+                            <span class="stat-value" id="confirmedGuestsTable">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Total Orang:</span>
+                            <span class="stat-value" id="totalPeopleTable">0</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -247,9 +386,9 @@
             
             <div class="messages-container">
                 <div class="messages-list" id="messagesList">
-                    <!-- Daftar ucapan akan dimuat dari Google Sheets -->
-                    <div class="message-loading">
-                        <i class="fas fa-spinner fa-spin"></i> Memuat ucapan...
+                    <div class="no-messages">
+                        <i class="fas fa-comment-slash"></i>
+                        <p>Belum ada ucapan dari tamu. Buat dan bagikan undangan terlebih dahulu.</p>
                     </div>
                 </div>
                 
@@ -283,11 +422,92 @@
                         <button id="refreshDataBtn" class="btn-refresh">
                             <i class="fas fa-sync-alt"></i> Refresh Data
                         </button>
+                        <button id="exportAllData" class="btn-export">
+                            <i class="fas fa-file-excel"></i> Export Semua Data
+                        </button>
+                    </div>
+                    
+                    <div class="current-invitation">
+                        <h4><i class="fas fa-info-circle"></i> Undangan Aktif</h4>
+                        <div id="currentInvitationInfo">
+                            <p>Tidak ada undangan aktif. Buat undangan baru.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Modal untuk Panduan -->
+    <div class="modal" id="guideModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fab fa-google"></i> Panduan Setup Google Apps Script</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-step">
+                    <h3>1. Buka Google Sheets</h3>
+                    <p>Buka <a href="https://sheets.google.com" target="_blank">Google Sheets</a> dan buat spreadsheet baru.</p>
+                </div>
+                
+                <div class="modal-step">
+                    <h3>2. Buka Apps Script</h3>
+                    <p>Dari menu, pilih: <strong>Extensions → Apps Script</strong></p>
+                </div>
+                
+                <div class="modal-step">
+                    <h3>3. Salin Kode</h3>
+                    <p>Salin seluruh kode dari file <code>google-apps-script.js</code> ke editor.</p>
+                    <div class="code-block">
+// Google Apps Script untuk Undangan Khitanan<br>
+// Deploy sebagai Web App untuk menerima data dari website<br>
+<br>
+const SHEET_NAME_INVITATIONS = "Invitations";<br>
+// ... kode lengkap
+                    </div>
+                </div>
+                
+                <div class="modal-step">
+                    <h3>4. Setup Sheets</h3>
+                    <p>Di editor Apps Script:</p>
+                    <ol>
+                        <li>Pilih fungsi <code>setupSheets</code> dari dropdown</li>
+                        <li>Klik <strong>Run</strong> (ikon segitiga hijau)</li>
+                        <li>Izinkan permission jika diminta</li>
+                        <li>Tunggu sampai muncul "Sheets setup completed!"</li>
+                    </ol>
+                </div>
+                
+                <div class="modal-step">
+                    <h3>5. Deploy sebagai Web App</h3>
+                    <p>Klik <strong>Deploy → New deployment</strong>:</p>
+                    <ul>
+                        <li><strong>Type:</strong> Web app</li>
+                        <li><strong>Description:</strong> Undangan Khitanan API</li>
+                        <li><strong>Execute as:</strong> Me</li>
+                        <li><strong>Who has access:</strong> Anyone</li>
+                    </ul>
+                </div>
+                
+                <div class="modal-step">
+                    <h3>6. Salin URL</h3>
+                    <p>Setelah deploy, salin <strong>Web App URL</strong> yang diberikan.</p>
+                </div>
+                
+                <div class="modal-step">
+                    <h3>7. Tempel URL di Website</h3>
+                    <p>Tempel URL di form konfigurasi dan klik <strong>Simpan URL</strong>.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-close" id="closeModalBtn">Tutup</button>
+                <a href="setup-guide.html" target="_blank" class="btn-detailed">
+                    <i class="fas fa-external-link-alt"></i> Panduan Detail dengan Gambar
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="creator-footer">
@@ -295,26 +515,32 @@
             <div class="footer-content">
                 <div class="footer-info">
                     <h3><i class="fas fa-mosque"></i> Undangan Khitanan Digital</h3>
-                    <p>Platform undangan digital gratis dengan fitur lengkap. Hosting di GitHub Pages, database Google Sheets, dan desain elegan.</p>
+                    <p>Platform undangan digital gratis dengan integrasi Google Sheets. Hosting di GitHub Pages, database real-time, dan desain elegan.</p>
+                    <div class="footer-tech">
+                        <span class="tech-badge"><i class="fab fa-google-drive"></i> Google Sheets</span>
+                        <span class="tech-badge"><i class="fab fa-github"></i> GitHub Pages</span>
+                        <span class="tech-badge"><i class="fas fa-code"></i> Google Apps Script</span>
+                    </div>
                 </div>
                 <div class="footer-links">
                     <h4>Panduan</h4>
-                    <a href="#"><i class="fas fa-question-circle"></i> Cara Menggunakan</a>
-                    <a href="#"><i class="fas fa-video"></i> Tutorial Video</a>
-                    <a href="#"><i class="fas fa-file-alt"></i> Dokumentasi</a>
+                    <a href="#config"><i class="fas fa-cogs"></i> Konfigurasi</a>
+                    <a href="#" id="openGuideModal"><i class="fas fa-book"></i> Panduan Setup</a>
+                    <a href="setup-guide.html" target="_blank"><i class="fas fa-video"></i> Tutorial Detail</a>
                 </div>
                 <div class="footer-links">
                     <h4>Fitur</h4>
-                    <a href="#"><i class="fas fa-music"></i> Backsound Otomatis</a>
-                    <a href="#"><i class="fas fa-link"></i> Link Personalisasi</a>
-                    <a href="#"><i class="fas fa-spreadsheet"></i> Database Sheets</a>
+                    <a href="#create"><i class="fas fa-plus-circle"></i> Buat Undangan</a>
+                    <a href="#guests"><i class="fas fa-user-plus"></i> Kelola Tamu</a>
+                    <a href="#messages"><i class="fas fa-comments"></i> Buku Tamu</a>
                 </div>
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2023 UndanganKhitanan.id - Dibuat dengan <i class="fas fa-heart"></i> untuk umat Muslim</p>
                 <div class="hosting-info">
                     <i class="fab fa-github"></i> Hosting di GitHub Pages | 
-                    <i class="fab fa-google"></i> Google Sheets Integration
+                    <i class="fab fa-google"></i> Google Sheets Integration | 
+                    <i class="fas fa-code"></i> Google Apps Script
                 </div>
             </div>
         </div>
@@ -323,13 +549,603 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="script.js"></script>
-    <script src="sheets-handler.js"></script>
+    <script src="gapps-handler.js"></script>
     <script>
-        // Inisialisasi variabel global untuk Google Sheets
-        const SHEET_ID = '1sw9t4cHBp0ymQhMWdrCGzqsOFaRjYra-opO77oyJKEI'; // Ganti dengan ID Google Sheets Anda
-        const API_KEY = 'https://script.google.com/macros/s/AKfycbxwqk6n_92StNVmDJPunlA--rMwNuusYcKqFnY2DPesPla8ByVc83mRhlyeRc157Z-n/exec'; // Ganti dengan API Key Anda
+        // Global variables
+        let currentInvitationId = null;
+        let currentInvitationData = null;
+        let gasWebAppUrl = null;
         
-        // Konfigurasi akan diatur di file sheets-handler.js
+        // DOM Ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Undangan Khitanan Creator Loaded');
+            
+            // Load saved GAS URL
+            const savedUrl = localStorage.getItem('gasWebAppUrl');
+            if (savedUrl) {
+                document.getElementById('gasUrl').value = savedUrl;
+                gasWebAppUrl = savedUrl;
+                testGASConnection();
+            }
+            
+            // Load current invitation
+            const savedInvitation = localStorage.getItem('currentInvitation');
+            if (savedInvitation) {
+                currentInvitationData = JSON.parse(savedInvitation);
+                currentInvitationId = currentInvitationData.id;
+                updateUIAfterInvitationCreated();
+            }
+            
+            // Event Listeners
+            document.getElementById('saveGasUrl').addEventListener('click', saveGASUrl);
+            document.getElementById('testConnection').addEventListener('click', testGASConnection);
+            document.getElementById('showGasGuide').addEventListener('click', showGuideModal);
+            document.getElementById('openGuideModal').addEventListener('click', showGuideModal);
+            document.getElementById('closeModal').addEventListener('click', closeGuideModal);
+            document.getElementById('closeModalBtn').addEventListener('click', closeGuideModal);
+            document.getElementById('setupSheets').addEventListener('click', setupSheets);
+            document.getElementById('openSheets').addEventListener('click', openGoogleSheets);
+            document.getElementById('refreshGuests').addEventListener('click', loadGuestData);
+            document.getElementById('refreshDataBtn').addEventListener('click', refreshAllData);
+            document.getElementById('exportAllData').addEventListener('click', exportAllData);
+            
+            // Form submission
+            document.getElementById('invitationForm').addEventListener('submit', createInvitation);
+            
+            // Guest link generation
+            document.getElementById('generateLinkBtn').addEventListener('click', generateGuestLink);
+            document.getElementById('copyLinkBtn').addEventListener('click', copyGeneratedLink);
+            document.getElementById('shareWhatsApp').addEventListener('click', shareViaWhatsApp);
+            
+            // Close modal when clicking outside
+            document.getElementById('guideModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeGuideModal();
+                }
+            });
+            
+            // Initialize color picker
+            initColorPicker();
+            
+            // Set default date to next Saturday
+            setDefaultEventDate();
+            
+            // Check if GAS is configured
+            checkGASConfiguration();
+        });
+        
+        function saveGASUrl() {
+            const urlInput = document.getElementById('gasUrl');
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                alert('Masukkan URL Google Apps Script Web App');
+                return;
+            }
+            
+            if (!url.includes('script.google.com/macros/s/') || !url.endsWith('/exec')) {
+                alert('URL tidak valid. Pastikan URL Web App dari Google Apps Script.');
+                return;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('gasWebAppUrl', url);
+            gasWebAppUrl = url;
+            
+            // Update status
+            updateConnectionStatus('connecting', 'Menguji koneksi...');
+            
+            // Test connection
+            testGASConnection();
+            
+            showNotification('URL berhasil disimpan', 'success');
+        }
+        
+        async function testGASConnection() {
+            if (!gasWebAppUrl) {
+                updateConnectionStatus('offline', 'URL belum diisi');
+                return;
+            }
+            
+            updateConnectionStatus('connecting', 'Menguji koneksi...');
+            
+            try {
+                const testUrl = `${gasWebAppUrl}?action=test&timestamp=${Date.now()}`;
+                const response = await fetch(testUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateConnectionStatus('online', 'Terhubung ke Google Sheets');
+                    document.getElementById('openSheets').style.display = 'inline-flex';
+                    document.getElementById('btnCreateInvitation').disabled = false;
+                    document.getElementById('formNote').textContent = 'Data akan tersimpan otomatis di Google Sheets';
+                    
+                    // Load initial data
+                    loadInitialData();
+                    
+                    showNotification('Koneksi Google Sheets berhasil!', 'success');
+                } else {
+                    updateConnectionStatus('error', data.message || 'Koneksi gagal');
+                    showNotification('Koneksi gagal: ' + data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Connection test failed:', error);
+                updateConnectionStatus('error', 'Gagal terhubung: ' + error.message);
+                showNotification('Gagal terhubung ke Google Sheets', 'error');
+            }
+        }
+        
+        function updateConnectionStatus(status, message) {
+            const indicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            indicator.className = 'status-indicator ' + status;
+            statusText.textContent = 'Status: ' + message;
+            
+            // Update form enable/disable
+            const formEnabled = status === 'online';
+            document.getElementById('btnCreateInvitation').disabled = !formEnabled;
+            document.getElementById('formNote').textContent = formEnabled 
+                ? 'Data akan tersimpan otomatis di Google Sheets'
+                : 'Harap konfigurasi Google Sheets terlebih dahulu';
+        }
+        
+        async function createInvitation(e) {
+            e.preventDefault();
+            
+            if (!gasWebAppUrl) {
+                alert('Harap konfigurasi Google Sheets terlebih dahulu');
+                return;
+            }
+            
+            // Get form values
+            const invitationData = {
+                childName: document.getElementById('childName').value,
+                childAge: document.getElementById('childAge').value,
+                parentName: document.getElementById('parentName').value,
+                parentPhone: document.getElementById('parentPhone').value,
+                eventDate: document.getElementById('eventDate').value,
+                eventLocation: document.getElementById('eventLocation').value,
+                eventDescription: document.getElementById('eventDescription').value,
+                enableMusic: document.getElementById('enableMusic').checked,
+                enableGuestBook: document.getElementById('enableGuestBook').checked,
+                colorTheme: window.currentColorTheme || '#2E7D32'
+            };
+            
+            // Disable button and show loading
+            const btn = document.getElementById('btnCreateInvitation');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Membuat...';
+            btn.disabled = true;
+            
+            try {
+                // Save to Google Apps Script
+                const response = await fetch(gasWebAppUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'createInvitation',
+                        data: invitationData
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentInvitationId = result.invitationId;
+                    currentInvitationData = { ...invitationData, id: result.invitationId };
+                    
+                    // Save to localStorage
+                    localStorage.setItem('currentInvitation', JSON.stringify(currentInvitationData));
+                    
+                    // Update UI
+                    updateUIAfterInvitationCreated();
+                    
+                    // Show success
+                    showNotification('Undangan berhasil dibuat!', 'success');
+                    
+                    // Enable guest link section
+                    document.getElementById('guestNameInput').disabled = false;
+                    document.getElementById('generateLinkBtn').disabled = false;
+                    document.getElementById('guestSectionNotice').style.display = 'none';
+                    
+                    // Update preview
+                    updateInvitationPreview();
+                    
+                } else {
+                    throw new Error(result.message);
+                }
+                
+            } catch (error) {
+                console.error('Error creating invitation:', error);
+                showNotification('Gagal membuat undangan: ' + error.message, 'error');
+            } finally {
+                // Restore button
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+        
+        function updateUIAfterInvitationCreated() {
+            if (!currentInvitationData) return;
+            
+            // Show preview section
+            document.getElementById('invitationPreview').style.display = 'block';
+            
+            // Update current invitation info
+            document.getElementById('currentInvitationInfo').innerHTML = `
+                <p><strong>${currentInvitationData.childName}</strong></p>
+                <p>${currentInvitationData.eventDate}</p>
+                <p>${currentInvitationData.eventLocation}</p>
+            `;
+            
+            // Load guest data
+            loadGuestData();
+            loadMessagesData();
+        }
+        
+        function updateInvitationPreview() {
+            document.getElementById('previewChildName').textContent = currentInvitationData.childName;
+            
+            // Format date
+            const eventDate = new Date(currentInvitationData.eventDate);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('previewEventDate').textContent = 
+                eventDate.toLocaleDateString('id-ID', options);
+        }
+        
+        async function loadGuestData() {
+            if (!currentInvitationId || !gasWebAppUrl) return;
+            
+            try {
+                const url = `${gasWebAppUrl}?action=getGuests&invitationId=${currentInvitationId}`;
+                const response = await fetch(url);
+                const result = await response.json();
+                
+                if (result.success) {
+                    updateGuestTable(result.data);
+                    updateGuestStats(result.data);
+                }
+            } catch (error) {
+                console.error('Error loading guest data:', error);
+            }
+        }
+        
+        async function loadMessagesData() {
+            if (!currentInvitationId || !gasWebAppUrl) return;
+            
+            try {
+                const url = `${gasWebAppUrl}?action=getMessages&invitationId=${currentInvitationId}`;
+                const response = await fetch(url);
+                const result = await response.json();
+                
+                if (result.success && result.data.length > 0) {
+                    displayMessages(result.data);
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+            }
+        }
+        
+        function updateGuestTable(guests) {
+            const tbody = document.getElementById('guestTableBody');
+            
+            if (!guests || guests.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-users-slash"></i><br>
+                            Belum ada tamu. Buat link undangan di atas.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            let html = '';
+            guests.forEach((guest, index) => {
+                let statusBadge = '';
+                switch(guest.attendanceStatus) {
+                    case 'hadir':
+                        statusBadge = '<span class="badge confirmed">Hadir</span>';
+                        break;
+                    case 'mungkin':
+                        statusBadge = '<span class="badge maybe">Mungkin</span>';
+                        break;
+                    case 'tidak':
+                        statusBadge = '<span class="badge declined">Tidak</span>';
+                        break;
+                    default:
+                        statusBadge = '<span class="badge pending">Menunggu</span>';
+                }
+                
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${guest.guestName}</td>
+                        <td>
+                            <input type="text" value="${guest.guestLink || '-'}" readonly 
+                                   class="table-link" title="${guest.guestLink || 'Link belum dibuat'}">
+                        </td>
+                        <td>${statusBadge}</td>
+                        <td>${guest.guestCount || 1}</td>
+                        <td>
+                            ${guest.guestLink ? `
+                            <button class="btn-small copy-link" data-link="${guest.guestLink}">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            ` : ''}
+                            <button class="btn-small send-reminder" data-name="${guest.guestName}">
+                                <i class="fas fa-bell"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.copy-link').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const link = this.getAttribute('data-link');
+                    navigator.clipboard.writeText(link)
+                        .then(() => showNotification('Link berhasil disalin', 'success'));
+                });
+            });
+        }
+        
+        function updateGuestStats(guests) {
+            const total = guests.length;
+            const confirmed = guests.filter(g => g.attendanceStatus === 'hadir').length;
+            const totalPeople = guests.reduce((sum, guest) => sum + (parseInt(guest.guestCount) || 1), 0);
+            
+            document.getElementById('totalGuestsTable').textContent = total;
+            document.getElementById('confirmedGuestsTable').textContent = confirmed;
+            document.getElementById('totalPeopleTable').textContent = totalPeople;
+            
+            // Update main stats
+            document.getElementById('totalGuests').textContent = total;
+            document.getElementById('confirmedGuests').textContent = confirmed;
+            document.getElementById('linksGenerated').textContent = total;
+            
+            // Update config info
+            document.getElementById('guestsCount').textContent = total;
+        }
+        
+        function displayMessages(messages) {
+            const container = document.getElementById('messagesList');
+            
+            if (!messages || messages.length === 0) {
+                container.innerHTML = `
+                    <div class="no-messages">
+                        <i class="fas fa-comment-slash"></i>
+                        <p>Belum ada ucapan dari tamu</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            messages.slice(-10).reverse().forEach(msg => {
+                const date = new Date(msg.timestamp);
+                const formattedDate = date.toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                html += `
+                    <div class="message-card fade-in">
+                        <div class="message-header">
+                            <div class="message-name">${msg.guestName}</div>
+                            <div class="message-date">${formattedDate}</div>
+                        </div>
+                        <div class="message-text">${msg.message}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            document.getElementById('totalMessages').textContent = messages.length;
+            document.getElementById('messagesCount').textContent = messages.length;
+        }
+        
+        async function generateGuestLink() {
+            const guestName = document.getElementById('guestNameInput').value.trim();
+            
+            if (!guestName) {
+                alert('Masukkan nama tamu terlebih dahulu');
+                return;
+            }
+            
+            if (!currentInvitationId) {
+                alert('Buat undangan terlebih dahulu');
+                return;
+            }
+            
+            // Generate guest link
+            const baseUrl = window.location.href.replace('index.html', 'invitation.html');
+            const guestLink = `${baseUrl}?invitation=${currentInvitationId}&guest=${encodeURIComponent(guestName)}`;
+            
+            // Save to Google Apps Script
+            try {
+                const response = await fetch(gasWebAppUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'createGuestLink',
+                        data: {
+                            invitationId: currentInvitationId,
+                            guestName: guestName,
+                            guestLink: guestLink
+                        }
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show link
+                    document.getElementById('generatedLink').value = guestLink;
+                    document.getElementById('linkResult').style.display = 'block';
+                    
+                    // Clear input
+                    document.getElementById('guestNameInput').value = '';
+                    
+                    // Refresh guest list
+                    loadGuestData();
+                    
+                    showNotification(`Link untuk ${guestName} berhasil dibuat`, 'success');
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Error creating guest link:', error);
+                showNotification('Gagal membuat link: ' + error.message, 'error');
+            }
+        }
+        
+        function copyGeneratedLink() {
+            const linkInput = document.getElementById('generatedLink');
+            linkInput.select();
+            document.execCommand('copy');
+            showNotification('Link berhasil disalin ke clipboard', 'success');
+        }
+        
+        function shareViaWhatsApp() {
+            const link = document.getElementById('generatedLink').value;
+            const message = `Assalamu'alaikum, saya mengundang Anda untuk menghadiri acara khitanan. Silakan buka undangan digital di: ${link}`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+        
+        function openGoogleSheets() {
+            // This would open the connected Google Sheets
+            // In a real implementation, you might store the Sheet ID
+            alert('Fitur ini memerlukan Sheet ID yang disimpan saat setup. Pastikan Anda telah menyimpan link Google Sheets Anda.');
+        }
+        
+        function showGuideModal() {
+            document.getElementById('guideModal').classList.add('active');
+        }
+        
+        function closeGuideModal() {
+            document.getElementById('guideModal').classList.remove('active');
+        }
+        
+        async function setupSheets() {
+            if (!gasWebAppUrl) {
+                alert('Masukkan URL Google Apps Script terlebih dahulu');
+                return;
+            }
+            
+            // Note: This would require a custom endpoint in GAS
+            // For now, show instructions
+            showGuideModal();
+        }
+        
+        function refreshAllData() {
+            if (currentInvitationId) {
+                loadGuestData();
+                loadMessagesData();
+                showNotification('Data diperbarui', 'success');
+            }
+        }
+        
+        function exportAllData() {
+            // This would export data from GAS to CSV
+            alert('Fitur export data akan mengunduh semua data dari Google Sheets dalam format CSV.');
+        }
+        
+        function initColorPicker() {
+            const colorOptions = document.querySelectorAll('.color-option');
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    colorOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    window.currentColorTheme = this.dataset.color;
+                });
+            });
+            
+            // Set default
+            if (colorOptions.length > 0) {
+                colorOptions[0].classList.add('active');
+                window.currentColorTheme = colorOptions[0].dataset.color;
+            }
+        }
+        
+        function setDefaultEventDate() {
+            const now = new Date();
+            const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+            nextWeek.setHours(10, 0, 0, 0); // Set to 10:00 AM
+            
+            // Format as YYYY-MM-DDTHH:mm for datetime-local input
+            const formattedDate = nextWeek.toISOString().slice(0, 16);
+            document.getElementById('eventDate').value = formattedDate;
+        }
+        
+        function checkGASConfiguration() {
+            if (!gasWebAppUrl) {
+                document.getElementById('formWarning').style.display = 'block';
+            }
+        }
+        
+        async function loadInitialData() {
+            if (!gasWebAppUrl) return;
+            
+            try {
+                // Test if sheets exist by trying to get all invitations
+                const testUrl = `${gasWebAppUrl}?action=getInvitation&invitationId=test`;
+                const response = await fetch(testUrl);
+                
+                if (response.ok) {
+                    document.getElementById('sheetsStatus').textContent = 'Active';
+                    document.getElementById('sheetsStatus').className = 'info-value status-active';
+                }
+            } catch (error) {
+                console.error('Error loading initial data:', error);
+            }
+        }
+        
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+                <button class="notification-close"><i class="fas fa-times"></i></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Show
+            setTimeout(() => notification.classList.add('show'), 10);
+            
+            // Auto remove
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
+            
+            // Close button
+            notification.querySelector('.notification-close').addEventListener('click', () => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            });
+        }
     </script>
 </body>
 </html>
