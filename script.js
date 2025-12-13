@@ -1,854 +1,743 @@
-// Main JavaScript file for the invitation website
+// Konfigurasi Google Apps Script
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwK2vJ9j7wUo6qJq4F5lWmXx3fLkHj5sT6vZ4gG0Y/exec';
 
-// Global variables
-let currentColorTheme = '#2E7D32';
-let guestLinks = [];
-let invitationData = {};
+// Variabel global
+let currentGuestName = '';
+let currentGuestId = '';
+let isMusicPlaying = true;
+let currentConfirmation = null;
 
-// DOM Ready
+// Inisialisasi saat halaman dimuat
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize the app based on current page
-    if (document.body.classList.contains('creator-page')) {
-        initCreatorPage();
-    } else if (document.body.classList.contains('guest-page')) {
-        initGuestPage();
+    // Periksa apakah ini halaman admin atau undangan
+    if (document.getElementById('guestForm')) {
+        initAdminPage();
+    } else {
+        initInvitationPage();
     }
     
-    // Set current year in footer if exists
-    const yearElement = document.querySelector('.current-year');
-    if (yearElement) {
-        yearElement.textContent = new Date().getFullYear();
-    }
+    // Setup modal
+    setupModals();
 });
 
-// Creator Page Functions
-function initCreatorPage() {
-    // Color picker functionality
-    const colorOptions = document.querySelectorAll('.color-option');
-    colorOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            colorOptions.forEach(opt => opt.classList.remove('active'));
-            this.classList.add('active');
-            currentColorTheme = this.dataset.color;
-            document.documentElement.style.setProperty('--primary-color', currentColorTheme);
-        });
-    });
+// ================== FUNGSI ADMIN PAGE ==================
+
+function initAdminPage() {
+    // Setup form pembuatan link
+    const guestForm = document.getElementById('guestForm');
+    guestForm.addEventListener('submit', handleGenerateLink);
     
-    // Set first color as active
-    if (colorOptions.length > 0) {
-        colorOptions[0].classList.add('active');
-    }
+    // Setup tombol reset
+    document.getElementById('resetBtn').addEventListener('click', resetForm);
     
-    // Form submission for creating invitation
-    const invitationForm = document.getElementById('invitationForm');
-    if (invitationForm) {
-        invitationForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            createInvitation();
-        });
-    }
+    // Setup tombol copy link
+    document.getElementById('copyBtn').addEventListener('click', copyGeneratedLink);
     
-    // Generate guest link button
-    const generateLinkBtn = document.getElementById('generateLinkBtn');
-    if (generateLinkBtn) {
-        generateLinkBtn.addEventListener('click', generateGuestLink);
-    }
+    // Setup tombol preview
+    document.getElementById('previewBtn').addEventListener('click', showPreview);
     
-    // Copy link button
-    const copyLinkBtn = document.getElementById('copyLinkBtn');
-    if (copyLinkBtn) {
-        copyLinkBtn.addEventListener('click', copyGeneratedLink);
-    }
+    // Setup tombol refresh database
+    document.getElementById('refreshDbBtn').addEventListener('click', loadGuestData);
     
-    // Load existing data
+    // Setup tombol export
+    document.getElementById('exportBtn').addEventListener('click', exportToCSV);
+    
+    // Setup tombol lihat ucapan
+    document.getElementById('viewMessagesBtn').addEventListener('click', showMessages);
+    
+    // Load data awal
     loadGuestData();
-    loadMessagesData();
-    
-    // Refresh data button
-    const refreshBtn = document.getElementById('refreshDataBtn');
-    if (refreshBtn) {
-        refreshBtn.addEventListener('click', function() {
-            loadGuestData();
-            loadMessagesData();
-            showNotification('Data diperbarui', 'success');
-        });
-    }
-    
-    // Open Google Sheets button
-    const openSheetsBtn = document.getElementById('openSheetsBtn');
-    if (openSheetsBtn) {
-        openSheetsBtn.addEventListener('click', function() {
-            // Replace with your actual Google Sheets URL
-            window.open('https://docs.google.com/spreadsheets/d/1sw9t4cHBp0ymQhMWdrCGzqsOFaRjYra-opO77oyJKEI/edit?', '_blank');
-        });
-    }
-    
-    // Set default date/time to next Saturday
-    const eventDateInput = document.getElementById('eventDate');
-    if (eventDateInput) {
-        const nextSaturday = getNextSaturday();
-        eventDateInput.value = nextSaturday;
-    }
 }
 
-// Guest Page Functions
-function initGuestPage() {
-    // Get guest name from URL parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const guestName = urlParams.get('guest') || 'Tamu Undangan';
+async function handleGenerateLink(e) {
+    e.preventDefault();
     
-    // Display guest name in various places
-    const guestNameElements = document.querySelectorAll('.guest-name-display');
-    guestNameElements.forEach(el => {
-        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-            el.value = guestName;
-        } else {
-            el.textContent = guestName;
-        }
-    });
+    const guestName = document.getElementById('guestName').value;
+    const guestGroup = document.getElementById('guestGroup').value;
+    const additionalNote = document.getElementById('additionalNote').value;
     
-    // RSVP form submission
-    const rsvpForm = document.getElementById('rsvpForm');
-    if (rsvpForm) {
-        rsvpForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            submitRSVP();
-        });
-    }
-    
-    // Guest message submission
-    const submitMessageBtn = document.getElementById('submitMessageBtn');
-    if (submitMessageBtn) {
-        submitMessageBtn.addEventListener('click', submitGuestMessage);
-    }
-    
-    // Share buttons
-    const shareButtons = document.querySelectorAll('.share-btn');
-    shareButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const platform = this.classList.contains('whatsapp') ? 'whatsapp' : 
-                            this.classList.contains('telegram') ? 'telegram' : 'copy';
-            shareInvitation(platform);
-        });
-    });
-    
-    // Load invitation data
-    loadInvitationDataForGuest();
-    loadGuestMessagesForDisplay();
-}
-
-// Function to create a new invitation
-async function createInvitation() {
-    // Get form values
-    const childName = document.getElementById('childName').value;
-    const childAge = document.getElementById('childAge').value;
-    const parentName = document.getElementById('parentName').value;
-    const parentPhone = document.getElementById('parentPhone').value;
-    const eventDate = document.getElementById('eventDate').value;
-    const eventLocation = document.getElementById('eventLocation').value;
-    const eventDescription = document.getElementById('eventDescription').value;
-    const enableMusic = document.getElementById('enableMusic').checked;
-    const enableGuestBook = document.getElementById('enableGuestBook').checked;
-    
-    // Create invitation object
-    invitationData = {
-        id: generateInvitationId(),
-        childName,
-        childAge,
-        parentName,
-        parentPhone,
-        eventDate,
-        eventLocation,
-        eventDescription,
-        enableMusic,
-        enableGuestBook,
-        colorTheme: currentColorTheme,
-        createdAt: new Date().toISOString(),
-        guestCount: 0,
-        messageCount: 0
-    };
-    
-    // In a real app, you would save this to Google Sheets
-    // For now, we'll simulate by saving to localStorage
-    localStorage.setItem('invitationData', JSON.stringify(invitationData));
-    
-    // Show success message
-    showNotification(`Undangan untuk ${childName} berhasil dibuat!`, 'success');
-    
-    // Enable guest link generator
-    document.getElementById('guestNameInput').disabled = false;
-    document.getElementById('generateLinkBtn').disabled = false;
-    
-    // Update stats display
-    updateStatsDisplay();
-    
-    return invitationData;
-}
-
-// Function to generate a guest link
-function generateGuestLink() {
-    const guestNameInput = document.getElementById('guestNameInput');
-    const guestName = guestNameInput.value.trim();
-    
-    if (!guestName) {
-        showNotification('Masukkan nama tamu terlebih dahulu', 'error');
-        guestNameInput.focus();
-        return;
-    }
-    
-    if (!invitationData || !invitationData.id) {
-        showNotification('Buat undangan terlebih dahulu', 'error');
-        return;
-    }
-    
-    // Create a unique ID for this guest
-    const guestId = generateGuestId(guestName);
-    
-    // Create the invitation link with guest parameter
-    const baseUrl = window.location.href.replace('index.html', 'invitation.html');
-    const guestLink = `${baseUrl}?invitation=${invitationData.id}&guest=${encodeURIComponent(guestName)}&id=${guestId}`;
-    
-    // Display the link
-    const linkResult = document.getElementById('linkResult');
-    const generatedLinkInput = document.getElementById('generatedLink');
-    
-    generatedLinkInput.value = guestLink;
-    linkResult.classList.add('active');
-    
-    // Add to guest links array
-    const guestLinkObj = {
-        id: guestId,
-        name: guestName,
-        link: guestLink,
-        status: 'pending',
-        createdAt: new Date().toISOString()
-    };
-    
-    guestLinks.push(guestLinkObj);
-    
-    // Update guest table
-    updateGuestTable();
-    
-    // Save to localStorage (in real app, save to Google Sheets)
-    saveGuestLinkToStorage(guestLinkObj);
-    
-    // Clear input
-    guestNameInput.value = '';
-    
-    showNotification(`Link untuk ${guestName} berhasil dibuat`, 'success');
-}
-
-// Function to copy generated link to clipboard
-async function copyGeneratedLink() {
-    const generatedLinkInput = document.getElementById('generatedLink');
+    // Tampilkan loading
+    const resultSection = document.getElementById('resultSection');
+    resultSection.style.display = 'block';
+    resultSection.innerHTML = '<div class="text-center"><div class="spinner"></div><p>Membuat link undangan...</p></div>';
     
     try {
-        await navigator.clipboard.writeText(generatedLinkInput.value);
-        showNotification('Link berhasil disalin ke clipboard', 'success');
-    } catch (err) {
-        console.error('Failed to copy: ', err);
-        showNotification('Gagal menyalin link', 'error');
+        // Generate unique ID untuk tamu
+        const guestId = generateGuestId(guestName);
+        
+        // Simpan data ke Google Sheets via Apps Script
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'createInvitation',
+                guestName: guestName,
+                guestId: guestId,
+                guestGroup: guestGroup,
+                additionalNote: additionalNote,
+                timestamp: new Date().toISOString()
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // Tampilkan link yang dihasilkan
+            const baseUrl = window.location.hostname === 'localhost' 
+                ? 'http://localhost:5500/invitation.html'
+                : 'https://[username].github.io/[repo-name]/invitation.html';
+                
+            const invitationLink = `${baseUrl}?guest=${guestId}`;
+            
+            resultSection.innerHTML = `
+                <h3><i class="fas fa-check-circle"></i> Link Undangan Berhasil Dibuat!</h3>
+                <div class="link-container">
+                    <input type="text" id="generatedLink" value="${invitationLink}" readonly>
+                    <button class="btn-copy" id="copyBtn">
+                        <i class="far fa-copy"></i> Salin
+                    </button>
+                </div>
+                <p class="link-instruction">
+                    <i class="fas fa-info-circle"></i> Link ini dapat dibagikan ke tamu. Nama tamu akan otomatis muncul saat link dibuka.
+                </p>
+                
+                <div class="preview-section">
+                    <h4><i class="fas fa-eye"></i> Preview Undangan</h4>
+                    <div class="preview-card">
+                        <div class="preview-header">
+                            <h5>Undangan Khitanan</h5>
+                            <p class="preview-guest">Untuk: <span id="previewGuestName">${guestName}</span></p>
+                        </div>
+                        <div class="preview-body">
+                            <p>Ini adalah preview tampilan undangan yang akan dilihat oleh tamu.</p>
+                            <button class="btn-preview" id="previewBtn">Lihat Preview Lengkap</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Re-attach event listeners
+            document.getElementById('copyBtn').addEventListener('click', copyGeneratedLink);
+            document.getElementById('previewBtn').addEventListener('click', () => showPreview(guestId, guestName));
+            
+            // Update preview nama
+            document.getElementById('previewGuestName').textContent = guestName;
+            
+            // Refresh tabel data
+            loadGuestData();
+        } else {
+            throw new Error(result.message || 'Gagal membuat link undangan');
+        }
+    } catch (error) {
+        resultSection.innerHTML = `
+            <div class="message error">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Error: ${error.message}</p>
+            </div>
+            <button class="btn-generate" onclick="handleGenerateLink(event)">Coba Lagi</button>
+        `;
     }
 }
 
-// Function to load guest data
-function loadGuestData() {
-    // In a real app, load from Google Sheets
-    // For demo, we'll use localStorage
-    const savedGuests = localStorage.getItem('guestLinks');
-    
-    if (savedGuests) {
-        guestLinks = JSON.parse(savedGuests);
-        updateGuestTable();
-    }
-    
-    // Update stats
-    updateStatsDisplay();
+function generateGuestId(guestName) {
+    // Buat ID unik dari nama dan timestamp
+    const timestamp = Date.now();
+    const namePart = guestName.replace(/\s+/g, '_').substring(0, 10).toLowerCase();
+    const randomPart = Math.random().toString(36).substring(2, 8);
+    return `${namePart}_${randomPart}_${timestamp.toString(36)}`;
 }
 
-// Function to update guest table
-function updateGuestTable() {
+function resetForm() {
+    document.getElementById('guestForm').reset();
+    document.getElementById('resultSection').style.display = 'none';
+}
+
+function copyGeneratedLink() {
+    const linkInput = document.getElementById('generatedLink');
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999); // Untuk mobile
+    
+    try {
+        navigator.clipboard.writeText(linkInput.value);
+        
+        // Tampilkan feedback
+        const copyBtn = document.getElementById('copyBtn');
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
+        copyBtn.style.background = '#2ecc71';
+        
+        setTimeout(() => {
+            copyBtn.innerHTML = originalText;
+            copyBtn.style.background = '';
+        }, 2000);
+    } catch (error) {
+        alert('Gagal menyalin link: ' + error.message);
+    }
+}
+
+function showPreview(guestId, guestName) {
+    const previewFrame = document.getElementById('previewFrame');
+    const baseUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:5500/invitation.html'
+        : 'https://[username].github.io/[repo-name]/invitation.html';
+    
+    previewFrame.src = `${baseUrl}?guest=${guestId || 'preview'}&preview=true`;
+    document.getElementById('previewModal').classList.add('active');
+}
+
+async function loadGuestData() {
     const tableBody = document.getElementById('guestTableBody');
+    tableBody.innerHTML = '<tr><td colspan="6" class="loading-data"><div class="spinner"></div><p>Memuat data...</p></td></tr>';
     
-    if (!tableBody) return;
-    
-    // Clear loading row
-    tableBody.innerHTML = '';
-    
-    if (guestLinks.length === 0) {
+    try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getGuests`);
+        const data = await response.json();
+        
+        if (data.success) {
+            renderGuestTable(data.guests);
+            updateStats(data.stats);
+        } else {
+            throw new Error(data.message);
+        }
+    } catch (error) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="5" style="text-align: center; padding: 40px;">
-                    Belum ada tamu. Buat link undangan di atas.
+                <td colspan="6" class="loading-data">
+                    <div class="message error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Gagal memuat data: ${error.message}</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+}
+
+function renderGuestTable(guests) {
+    const tableBody = document.getElementById('guestTableBody');
+    
+    if (!guests || guests.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="loading-data">
+                    <p>Belum ada data tamu. Buat undangan pertama Anda!</p>
                 </td>
             </tr>
         `;
         return;
     }
     
-    // Add each guest to the table
-    guestLinks.forEach((guest, index) => {
-        const row = document.createElement('tr');
-        row.className = 'fade-in';
+    let html = '';
+    guests.forEach((guest, index) => {
+        const statusClass = guest.opened ? 'status-opened' : 'status-pending';
+        const statusText = guest.opened ? 'Sudah Dibuka' : 'Belum Dibuka';
         
-        // Status badge
-        let statusBadge = '';
-        switch(guest.status) {
-            case 'confirmed':
-                statusBadge = '<span class="badge confirmed">Hadir</span>';
-                break;
-            case 'maybe':
-                statusBadge = '<span class="badge maybe">Mungkin</span>';
-                break;
-            case 'declined':
-                statusBadge = '<span class="badge declined">Tidak Hadir</span>';
-                break;
-            default:
-                statusBadge = '<span class="badge pending">Menunggu</span>';
+        html += `
+            <tr class="fade-in">
+                <td>${index + 1}</td>
+                <td><strong>${guest.name}</strong><br><small>${guest.group}</small></td>
+                <td>
+                    <div class="link-cell">
+                        <input type="text" value="${guest.link}" readonly>
+                        <button class="btn-small btn-copy" onclick="copyTableLink('${guest.link}')">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                </td>
+                <td>${formatDate(guest.timestamp)}</td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td>
+                    <button class="btn-small btn-view" onclick="viewGuestDetails('${guest.id}')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-small btn-delete" onclick="deleteGuest('${guest.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+    
+    tableBody.innerHTML = html;
+}
+
+function copyTableLink(link) {
+    navigator.clipboard.writeText(link).then(() => {
+        showToast('Link berhasil disalin!');
+    });
+}
+
+function updateStats(stats) {
+    document.getElementById('totalGuests').textContent = stats.total || 0;
+    document.getElementById('openedGuests').textContent = stats.opened || 0;
+    document.getElementById('messageCount').textContent = stats.messages || 0;
+}
+
+function exportToCSV() {
+    // Implementasi export ke CSV
+    showToast('Fitur export sedang dalam pengembangan');
+}
+
+async function showMessages() {
+    const modal = document.getElementById('messagesModal');
+    const container = document.getElementById('messagesContainer');
+    
+    container.innerHTML = '<div class="text-center"><div class="spinner"></div><p>Memuat ucapan...</p></div>';
+    modal.classList.add('active');
+    
+    try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getMessages`);
+        const data = await response.json();
+        
+        if (data.success && data.messages.length > 0) {
+            let html = '';
+            data.messages.forEach(message => {
+                html += `
+                    <div class="wish-item">
+                        <div class="wish-header">
+                            <span class="wish-name">${message.name}</span>
+                            <span class="wish-date">${formatDate(message.timestamp)}</span>
+                        </div>
+                        <p class="wish-message">${message.message}</p>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = '<p class="text-center">Belum ada ucapan dari tamu.</p>';
         }
-        
-        row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${guest.name}</td>
-            <td>
-                <input type="text" value="${guest.link}" readonly class="table-link">
-            </td>
-            <td>${statusBadge}</td>
-            <td>
-                <button class="btn-small copy-row-link" data-link="${guest.link}">
-                    <i class="fas fa-copy"></i>
-                </button>
-                <button class="btn-small delete-guest" data-id="${guest.id}">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        `;
-        
-        tableBody.appendChild(row);
-    });
-    
-    // Add event listeners to new buttons
-    document.querySelectorAll('.copy-row-link').forEach(button => {
-        button.addEventListener('click', function() {
-            const link = this.getAttribute('data-link');
-            navigator.clipboard.writeText(link)
-                .then(() => showNotification('Link berhasil disalin', 'success'))
-                .catch(err => console.error('Copy failed:', err));
-        });
-    });
-    
-    document.querySelectorAll('.delete-guest').forEach(button => {
-        button.addEventListener('click', function() {
-            const guestId = this.getAttribute('data-id');
-            deleteGuestLink(guestId);
-        });
-    });
-}
-
-// Function to update stats display
-function updateStatsDisplay() {
-    // Update stats on creator page
-    document.getElementById('totalGuests').textContent = guestLinks.length;
-    
-    // Count confirmed guests
-    const confirmedCount = guestLinks.filter(g => g.status === 'confirmed').length;
-    document.getElementById('confirmedGuests').textContent = confirmedCount;
-    
-    // Count messages (in a real app, this would come from Google Sheets)
-    const messages = JSON.parse(localStorage.getItem('guestMessages') || '[]');
-    document.getElementById('totalMessages').textContent = messages.length;
-    
-    document.getElementById('linksGenerated').textContent = guestLinks.length;
-}
-
-// Function to load messages data
-function loadMessagesData() {
-    // In a real app, load from Google Sheets
-    const messages = JSON.parse(localStorage.getItem('guestMessages') || '[]');
-    const messagesList = document.getElementById('messagesList');
-    
-    if (!messagesList) return;
-    
-    if (messages.length === 0) {
-        messagesList.innerHTML = `
-            <div class="no-messages">
-                <i class="fas fa-comment-slash"></i>
-                <p>Belum ada ucapan dari tamu</p>
+    } catch (error) {
+        container.innerHTML = `
+            <div class="message error">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Gagal memuat ucapan: ${error.message}</p>
             </div>
         `;
+    }
+}
+
+// ================== FUNGSI INVITATION PAGE ==================
+
+function initInvitationPage() {
+    // Ambil parameter dari URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const guestId = urlParams.get('guest');
+    const isPreview = urlParams.get('preview') === 'true';
+    
+    // Setup kontrol musik
+    const musicToggle = document.getElementById('musicToggle');
+    const volumeControl = document.getElementById('volumeControl');
+    const backgroundMusic = document.getElementById('backgroundMusic');
+    
+    if (musicToggle) {
+        musicToggle.addEventListener('click', toggleMusic);
+    }
+    
+    if (volumeControl) {
+        volumeControl.addEventListener('click', toggleVolume);
+    }
+    
+    // Auto-play musik dengan volume rendah
+    if (backgroundMusic) {
+        backgroundMusic.volume = 0.3;
+        backgroundMusic.play().catch(e => console.log('Auto-play prevented:', e));
+    }
+    
+    // Jika preview mode, tampilkan nama default
+    if (isPreview) {
+        document.getElementById('guestNameDisplay').textContent = 'Bapak/Ibu Budi Santoso (Preview)';
+        currentGuestName = 'Bapak/Ibu Budi Santoso (Preview)';
+        currentGuestId = 'preview';
+        document.getElementById('wisherName').value = currentGuestName;
+        loadWishes();
         return;
     }
     
-    // Display messages (show only latest 10)
-    const recentMessages = messages.slice(-10).reverse();
-    
-    messagesList.innerHTML = recentMessages.map(msg => `
-        <div class="message-card fade-in">
-            <div class="message-header">
-                <div class="message-name">${msg.name}</div>
-                <div class="message-date">${formatDate(msg.timestamp)}</div>
-            </div>
-            <div class="message-text">${msg.message}</div>
-            <div class="message-meta">
-                <span class="attendance-status">Status: ${getStatusText(msg.attendance)}</span>
-                ${msg.guestCount ? `<span class="guest-count">Jumlah: ${msg.guestCount} orang</span>` : ''}
-            </div>
-        </div>
-    `).join('');
-}
-
-// Function to submit RSVP (guest page)
-function submitRSVP() {
-    const guestName = document.getElementById('confirmName').value;
-    const attendance = document.querySelector('input[name="attendance"]:checked').value;
-    const guestCount = document.getElementById('guestCount').value;
-    const guestMessage = document.getElementById('guestMessage').value;
-    
-    // Get invitation ID from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const invitationId = urlParams.get('invitation');
-    
-    // Create RSVP object
-    const rsvpData = {
-        invitationId,
-        guestName,
-        attendance,
-        guestCount,
-        message: guestMessage,
-        timestamp: new Date().toISOString()
-    };
-    
-    // In a real app, submit to Google Sheets
-    // For demo, save to localStorage
-    saveRSVPToStorage(rsvpData);
-    
-    // Update guest status in creator data if this guest has a link
-    updateGuestStatus(guestName, attendance);
-    
-    // Show success message
-    showNotification('Konfirmasi kehadiran berhasil dikirim!', 'success');
-    
-    // Reset form
-    document.getElementById('guestMessage').value = '';
-    
-    // Reload messages to show the new one
-    if (document.body.classList.contains('guest-page')) {
-        loadGuestMessagesForDisplay();
-    }
-}
-
-// Function to submit guest message
-function submitGuestMessage() {
-    const guestName = document.getElementById('messageName').value;
-    const message = document.getElementById('newMessage').value.trim();
-    
-    if (!message) {
-        showNotification('Tulis ucapan terlebih dahulu', 'error');
-        document.getElementById('newMessage').focus();
-        return;
-    }
-    
-    // Get invitation ID from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const invitationId = urlParams.get('invitation');
-    
-    // Create message object
-    const messageData = {
-        invitationId,
-        name: guestName,
-        message,
-        timestamp: new Date().toISOString()
-    };
-    
-    // In a real app, submit to Google Sheets
-    saveMessageToStorage(messageData);
-    
-    // Show success message
-    showNotification('Ucapan berhasil dikirim!', 'success');
-    
-    // Clear input
-    document.getElementById('newMessage').value = '';
-    
-    // Reload messages
-    if (document.body.classList.contains('guest-page')) {
-        loadGuestMessagesForDisplay();
-    }
-}
-
-// Function to load invitation data for guest page
-function loadInvitationDataForGuest() {
-    // In a real app, load from Google Sheets based on invitation ID in URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const invitationId = urlParams.get('invitation');
-    
-    if (invitationId) {
-        // Try to load from localStorage (in real app, load from Google Sheets)
-        const savedInvitation = localStorage.getItem('invitationData');
-        
-        if (savedInvitation) {
-            invitationData = JSON.parse(savedInvitation);
-            
-            // Populate the invitation data on the page
-            document.getElementById('childNameDisplay').textContent = invitationData.childName;
-            document.getElementById('childAgeDisplay').textContent = `${invitationData.childAge} Tahun`;
-            document.getElementById('parentNameDisplay').textContent = invitationData.parentName;
-            document.getElementById('familyNameDisplay').textContent = invitationData.parentName;
-            document.getElementById('contactPhoneDisplay').textContent = invitationData.parentPhone;
-            
-            // Format and display event date
-            const eventDate = new Date(invitationData.eventDate);
-            const formattedDate = formatDateForDisplay(eventDate);
-            const formattedTime = formatTimeForDisplay(eventDate);
-            
-            document.getElementById('eventDateDisplay').textContent = formattedDate;
-            document.getElementById('eventTimeDisplay').textContent = `Pukul ${formattedTime}`;
-            
-            // Display location
-            document.getElementById('eventLocationDisplay').textContent = invitationData.eventLocation;
-            
-            // Create Google Maps link
-            const mapsLink = document.getElementById('mapsLink');
-            if (mapsLink) {
-                const encodedLocation = encodeURIComponent(invitationData.eventLocation);
-                mapsLink.href = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
-            }
-            
-            // Apply color theme if different from default
-            if (invitationData.colorTheme && invitationData.colorTheme !== '#2E7D32') {
-                document.documentElement.style.setProperty('--primary-color', invitationData.colorTheme);
-            }
-            
-            // Handle music setting
-            if (!invitationData.enableMusic) {
-                const musicToggle = document.getElementById('musicToggle');
-                if (musicToggle) {
-                    musicToggle.style.display = 'none';
-                }
-            }
-        }
-    }
-}
-
-// Function to load guest messages for display on guest page
-function loadGuestMessagesForDisplay() {
-    // In a real app, load from Google Sheets
-    const messages = JSON.parse(localStorage.getItem('guestMessages') || '[]');
-    const messagesContainer = document.getElementById('guestbookMessages');
-    
-    if (!messagesContainer) return;
-    
-    // Filter messages for this invitation
-    const urlParams = new URLSearchParams(window.location.search);
-    const invitationId = urlParams.get('invitation');
-    
-    const filteredMessages = invitationId 
-        ? messages.filter(msg => msg.invitationId === invitationId)
-        : messages;
-    
-    if (filteredMessages.length === 0) {
-        messagesContainer.innerHTML = `
-            <div class="no-messages">
-                <i class="fas fa-comment-slash"></i>
-                <p>Jadilah yang pertama mengirim ucapan!</p>
-            </div>
-        `;
-        return;
-    }
-    
-    // Display messages (show only latest 15)
-    const recentMessages = filteredMessages.slice(-15).reverse();
-    
-    messagesContainer.innerHTML = recentMessages.map(msg => `
-        <div class="message-card fade-in">
-            <div class="message-header">
-                <div class="message-name">${msg.name}</div>
-                <div class="message-date">${formatDate(msg.timestamp)}</div>
-            </div>
-            <div class="message-text">${msg.message}</div>
-            ${msg.attendance ? `
-                <div class="message-meta">
-                    <span class="attendance-status">${getStatusText(msg.attendance)}</span>
-                </div>
-            ` : ''}
-        </div>
-    `).join('');
-}
-
-// Function to share invitation
-function shareInvitation(platform) {
-    const currentUrl = window.location.href;
-    const guestName = document.getElementById('guestNameDisplay')?.textContent || 'Tamu Undangan';
-    const childName = document.getElementById('childNameDisplay')?.textContent || 'Anak';
-    
-    const message = `Assalamu'alaikum, saya diundang dalam acara khitanan ${childName}. Buka undangan digital di: ${currentUrl}`;
-    
-    if (platform === 'whatsapp') {
-        window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-    } else if (platform === 'telegram') {
-        window.open(`https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(message)}`, '_blank');
+    // Jika ada guest ID, ambil data tamu
+    if (guestId) {
+        loadGuestDataFromId(guestId);
     } else {
-        // Copy to clipboard
-        navigator.clipboard.writeText(currentUrl)
-            .then(() => showNotification('Link berhasil disalin ke clipboard', 'success'))
-            .catch(err => console.error('Copy failed:', err));
+        // Redirect ke halaman utama jika tidak ada parameter
+        window.location.href = 'index.html';
+    }
+    
+    // Setup konfirmasi kehadiran
+    document.getElementById('confirmYes')?.addEventListener('click', () => setConfirmation('hadir'));
+    document.getElementById('confirmNo')?.addEventListener('click', () => setConfirmation('tidak-hadir'));
+    
+    // Setup form ucapan
+    document.getElementById('submitWishBtn')?.addEventListener('click', submitWish);
+    
+    // Setup tombol peta
+    document.getElementById('mapBtn')?.addEventListener('click', showMap);
+    
+    // Setup tombol bagikan
+    document.getElementById('shareBtn')?.addEventListener('click', shareInvitation);
+    
+    // Setup tombol download
+    document.getElementById('downloadBtn')?.addEventListener('click', downloadInvitation);
+    
+    // Load ucapan yang sudah ada
+    loadWishes();
+    
+    // Track opening undangan
+    trackInvitationOpen(guestId);
+}
+
+async function loadGuestDataFromId(guestId) {
+    try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getGuest&guestId=${guestId}`);
+        const data = await response.json();
+        
+        if (data.success && data.guest) {
+            currentGuestName = data.guest.name;
+            currentGuestId = guestId;
+            
+            // Tampilkan nama tamu
+            document.getElementById('guestNameDisplay').textContent = currentGuestName;
+            document.getElementById('wisherName').value = currentGuestName;
+            
+            // Tambahkan kelas animasi
+            document.getElementById('guestNameDisplay').classList.add('fade-in');
+        } else {
+            throw new Error('Tamu tidak ditemukan');
+        }
+    } catch (error) {
+        // Fallback ke parameter URL jika gagal
+        const urlParams = new URLSearchParams(window.location.search);
+        const guestParam = urlParams.get('guest');
+        if (guestParam) {
+            currentGuestName = decodeURIComponent(guestParam.replace(/_/g, ' '));
+            document.getElementById('guestNameDisplay').textContent = currentGuestName;
+            document.getElementById('wisherName').value = currentGuestName;
+        }
     }
 }
 
-// Utility Functions
-function generateInvitationId() {
-    return 'inv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-}
-
-function generateGuestId(guestName) {
-    const normalizedName = guestName.toLowerCase().replace(/\s+/g, '_');
-    return 'guest_' + Date.now() + '_' + normalizedName + '_' + Math.random().toString(36).substr(2, 5);
-}
-
-function getNextSaturday() {
-    const today = new Date();
-    const dayOfWeek = today.getDay(); // 0 = Sunday, 6 = Saturday
-    let daysUntilSaturday = 6 - dayOfWeek;
+function toggleMusic() {
+    const backgroundMusic = document.getElementById('backgroundMusic');
+    const musicStatus = document.getElementById('musicStatus');
     
-    if (daysUntilSaturday <= 0) {
-        daysUntilSaturday += 7;
+    if (isMusicPlaying) {
+        backgroundMusic.pause();
+        musicStatus.textContent = 'Musik: OFF';
+        document.getElementById('musicToggle').innerHTML = '<i class="fas fa-music"></i> Musik: OFF';
+    } else {
+        backgroundMusic.play();
+        musicStatus.textContent = 'Musik: ON';
+        document.getElementById('musicToggle').innerHTML = '<i class="fas fa-music"></i> Musik: ON';
     }
     
-    const nextSaturday = new Date(today);
-    nextSaturday.setDate(today.getDate() + daysUntilSaturday);
-    nextSaturday.setHours(10, 0, 0, 0); // Set to 10:00 AM
+    isMusicPlaying = !isMusicPlaying;
+}
+
+function toggleVolume() {
+    const backgroundMusic = document.getElementById('backgroundMusic');
+    const volumeBtn = document.getElementById('volumeControl');
     
-    // Format as YYYY-MM-DDTHH:mm for datetime-local input
-    return nextSaturday.toISOString().slice(0, 16);
+    if (backgroundMusic.volume === 0.3) {
+        backgroundMusic.volume = 0.7;
+        volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+    } else if (backgroundMusic.volume === 0.7) {
+        backgroundMusic.volume = 1.0;
+        volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+    } else {
+        backgroundMusic.volume = 0.3;
+        volumeBtn.innerHTML = '<i class="fas fa-volume-down"></i>';
+    }
+}
+
+function setConfirmation(status) {
+    currentConfirmation = status;
+    
+    // Update tampilan
+    const confirmYes = document.getElementById('confirmYes');
+    const confirmNo = document.getElementById('confirmNo');
+    
+    if (status === 'hadir') {
+        confirmYes.classList.add('selected');
+        confirmNo.classList.remove('selected');
+    } else {
+        confirmNo.classList.add('selected');
+        confirmYes.classList.remove('selected');
+    }
+    
+    // Tampilkan modal konfirmasi
+    document.getElementById('confirmModalTitle').textContent = 
+        status === 'hadir' ? 'Konfirmasi Kehadiran' : 'Konfirmasi Ketidakhadiran';
+    
+    document.getElementById('confirmModalMessage').textContent = 
+        status === 'hadir' 
+            ? 'Apakah Anda yakin akan hadir di acara khitanan?'
+            : 'Apakah Anda yakin tidak bisa hadir di acara khitanan?';
+    
+    document.getElementById('confirmModal').classList.add('active');
+}
+
+async function submitConfirmation() {
+    if (!currentConfirmation || !currentGuestId) return;
+    
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'saveConfirmation',
+                guestId: currentGuestId,
+                confirmation: currentConfirmation,
+                timestamp: new Date().toISOString()
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showToast('Terima kasih atas konfirmasi Anda!');
+            document.getElementById('confirmModal').classList.remove('active');
+        } else {
+            throw new Error(result.message);
+        }
+    } catch (error) {
+        showToast(`Error: ${error.message}`, 'error');
+    }
+}
+
+async function submitWish() {
+    const wishMessage = document.getElementById('wishMessage').value.trim();
+    
+    if (!wishMessage) {
+        showToast('Silakan tulis ucapan terlebih dahulu', 'error');
+        return;
+    }
+    
+    if (!currentGuestId) {
+        showToast('Data tamu tidak valid', 'error');
+        return;
+    }
+    
+    // Tampilkan loading
+    const submitBtn = document.getElementById('submitWishBtn');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+    submitBtn.disabled = true;
+    
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'saveWish',
+                guestId: currentGuestId,
+                guestName: currentGuestName,
+                message: wishMessage,
+                timestamp: new Date().toISOString()
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showToast('Ucapan Anda telah terkirim! Terima kasih.');
+            document.getElementById('wishMessage').value = '';
+            
+            // Refresh daftar ucapan
+            loadWishes();
+        } else {
+            throw new Error(result.message);
+        }
+    } catch (error) {
+        showToast(`Error: ${error.message}`, 'error');
+    } finally {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }
+}
+
+async function loadWishes() {
+    const container = document.getElementById('wishesContainer');
+    if (!container) return;
+    
+    container.innerHTML = '<div class="loading-wishes"><i class="fas fa-spinner fa-spin"></i> Memuat ucapan...</div>';
+    
+    try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getWishes`);
+        const data = await response.json();
+        
+        if (data.success && data.wishes.length > 0) {
+            let html = '';
+            // Tampilkan maksimal 10 ucapan terbaru
+            const recentWishes = data.wishes.slice(-10).reverse();
+            
+            recentWishes.forEach(wish => {
+                html += `
+                    <div class="wish-item fade-in">
+                        <div class="wish-header">
+                            <span class="wish-name">${wish.name}</span>
+                            <span class="wish-date">${formatDate(wish.timestamp)}</span>
+                        </div>
+                        <p class="wish-message">${wish.message}</p>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = '<p class="no-wishes">Jadilah yang pertama mengirim ucapan!</p>';
+        }
+    } catch (error) {
+        container.innerHTML = '<p class="error-wishes">Gagal memuat ucapan</p>';
+    }
+}
+
+async function trackInvitationOpen(guestId) {
+    if (!guestId || guestId === 'preview') return;
+    
+    try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'trackOpen',
+                guestId: guestId,
+                timestamp: new Date().toISOString()
+            })
+        });
+    } catch (error) {
+        console.log('Gagal melacak pembukaan undangan:', error);
+    }
+}
+
+function showMap() {
+    document.getElementById('mapModal').classList.add('active');
+}
+
+function shareInvitation() {
+    const shareData = {
+        title: 'Undangan Khitanan',
+        text: `Undangan khitanan untuk ${currentGuestName}. Buka link untuk detail lengkap.`,
+        url: window.location.href
+    };
+    
+    if (navigator.share) {
+        navigator.share(shareData)
+            .then(() => showToast('Undangan berhasil dibagikan!'))
+            .catch(error => console.log('Error sharing:', error));
+    } else {
+        // Fallback untuk browser yang tidak support Web Share API
+        navigator.clipboard.writeText(window.location.href)
+            .then(() => showToast('Link undangan telah disalin!'));
+    }
+}
+
+function downloadInvitation() {
+    // Implementasi download sebagai gambar atau PDF
+    showToast('Fitur download sedang dalam pengembangan');
+}
+
+// ================== FUNGSI UMUM ==================
+
+function setupModals() {
+    // Setup semua modal
+    const modals = document.querySelectorAll('.modal');
+    const closeButtons = document.querySelectorAll('.close-modal, .btn-cancel');
+    
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            modals.forEach(modal => modal.classList.remove('active'));
+        });
+    });
+    
+    // Setup tombol konfirmasi di modal
+    const finalConfirmBtn = document.getElementById('finalConfirmBtn');
+    if (finalConfirmBtn) {
+        finalConfirmBtn.addEventListener('click', submitConfirmation);
+    }
+    
+    // Tutup modal saat klik di luar
+    modals.forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+    });
 }
 
 function formatDate(dateString) {
     const date = new Date(dateString);
-    const options = { 
-        day: 'numeric', 
-        month: 'long', 
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    };
-    return date.toLocaleDateString('id-ID', options);
-}
-
-function formatDateForDisplay(date) {
-    const options = { 
-        weekday: 'long',
-        day: 'numeric', 
-        month: 'long', 
+    return date.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
         year: 'numeric'
-    };
-    return date.toLocaleDateString('id-ID', options);
+    });
 }
 
-function formatTimeForDisplay(date) {
-    const options = { 
-        hour: '2-digit',
-        minute: '2-digit'
-    };
-    return date.toLocaleTimeString('id-ID', options);
-}
-
-function getStatusText(status) {
-    switch(status) {
-        case 'hadir': return 'Hadir';
-        case 'mungkin': return 'Mungkin Hadir';
-        case 'tidak': return 'Tidak Hadir';
-        default: return 'Menunggu Konfirmasi';
-    }
-}
-
-function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
+function showToast(message, type = 'success') {
+    // Buat elemen toast
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
         <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
         <span>${message}</span>
-        <button class="notification-close"><i class="fas fa-times"></i></button>
     `;
     
-    // Add to page
-    document.body.appendChild(notification);
+    document.body.appendChild(toast);
     
-    // Show notification
-    setTimeout(() => notification.classList.add('show'), 10);
+    // Tampilkan toast
+    setTimeout(() => toast.classList.add('show'), 10);
     
-    // Close button
-    notification.querySelector('.notification-close').addEventListener('click', () => {
-        notification.classList.remove('show');
-        setTimeout(() => notification.remove(), 300);
-    });
-    
-    // Auto-remove after 5 seconds
+    // Hapus toast setelah 3 detik
     setTimeout(() => {
-        if (notification.parentNode) {
-            notification.classList.remove('show');
-            setTimeout(() => notification.remove(), 300);
-        }
-    }, 5000);
+        toast.classList.remove('show');
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 300);
+    }, 3000);
 }
 
-function saveGuestLinkToStorage(guestLink) {
-    // In a real app, save to Google Sheets
-    // For demo, save to localStorage
-    guestLinks.push(guestLink);
-    localStorage.setItem('guestLinks', JSON.stringify(guestLinks));
-}
-
-function saveRSVPToStorage(rsvpData) {
-    // In a real app, save to Google Sheets
-    // For demo, save to localStorage
-    const messages = JSON.parse(localStorage.getItem('guestMessages') || '[]');
-    messages.push({
-        ...rsvpData,
-        type: 'rsvp'
-    });
-    localStorage.setItem('guestMessages', JSON.stringify(messages));
-}
-
-function saveMessageToStorage(messageData) {
-    // In a real app, save to Google Sheets
-    // For demo, save to localStorage
-    const messages = JSON.parse(localStorage.getItem('guestMessages') || '[]');
-    messages.push({
-        ...messageData,
-        type: 'message'
-    });
-    localStorage.setItem('guestMessages', JSON.stringify(messages));
-}
-
-function updateGuestStatus(guestName, status) {
-    // Update guest status in local storage
-    const guestIndex = guestLinks.findIndex(g => g.name === guestName);
-    
-    if (guestIndex !== -1) {
-        // Map status values
-        let mappedStatus = 'pending';
-        if (status === 'hadir') mappedStatus = 'confirmed';
-        if (status === 'mungkin') mappedStatus = 'maybe';
-        if (status === 'tidak') mappedStatus = 'declined';
-        
-        guestLinks[guestIndex].status = mappedStatus;
-        localStorage.setItem('guestLinks', JSON.stringify(guestLinks));
-        
-        // Update table if on creator page
-        if (document.body.classList.contains('creator-page')) {
-            updateGuestTable();
-            updateStatsDisplay();
-        }
-    }
-}
-
-function deleteGuestLink(guestId) {
-    if (confirm('Apakah Anda yakin ingin menghapus tamu ini?')) {
-        guestLinks = guestLinks.filter(g => g.id !== guestId);
-        localStorage.setItem('guestLinks', JSON.stringify(guestLinks));
-        updateGuestTable();
-        updateStatsDisplay();
-        showNotification('Tamu berhasil dihapus', 'success');
-    }
-}
-
-// Add CSS for notifications
-const notificationStyles = `
-    .notification {
+// Style untuk toast
+const toastStyle = document.createElement('style');
+toastStyle.textContent = `
+    .toast {
         position: fixed;
-        top: 20px;
+        bottom: 20px;
         right: 20px;
-        background: white;
-        border-radius: var(--border-radius);
+        background: #2ecc71;
+        color: white;
         padding: 15px 20px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        border-radius: 8px;
         display: flex;
         align-items: center;
-        gap: 12px;
-        z-index: 9999;
-        transform: translateX(150%);
-        transition: transform 0.3s ease;
-        max-width: 400px;
-        border-left: 4px solid var(--primary-color);
+        gap: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 10000;
+        max-width: 300px;
     }
     
-    .notification.show {
-        transform: translateX(0);
+    .toast.show {
+        transform: translateY(0);
+        opacity: 1;
     }
     
-    .notification.success {
-        border-left-color: #4CAF50;
+    .toast.error {
+        background: #e74c3c;
     }
     
-    .notification.error {
-        border-left-color: #f44336;
-    }
-    
-    .notification i {
+    .toast i {
         font-size: 1.2rem;
     }
-    
-    .notification.success i {
-        color: #4CAF50;
-    }
-    
-    .notification.error i {
-        color: #f44336;
-    }
-    
-    .notification-close {
-        background: none;
-        border: none;
-        color: #999;
-        cursor: pointer;
-        padding: 5px;
-        margin-left: auto;
-    }
-    
-    .badge {
-        display: inline-block;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 0.8rem;
-        font-weight: 500;
-    }
-    
-    .badge.confirmed {
-        background-color: #d4edda;
-        color: #155724;
-    }
-    
-    .badge.maybe {
-        background-color: #fff3cd;
-        color: #856404;
-    }
-    
-    .badge.declined {
-        background-color: #f8d7da;
-        color: #721c24;
-    }
-    
-    .badge.pending {
-        background-color: #e2e3e5;
-        color: #383d41;
-    }
-    
-    .btn-small {
-        padding: 6px 12px;
-        font-size: 0.9rem;
-    }
-    
-    .table-link {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background: #f8f9fa;
-        font-size: 0.9rem;
-    }
 `;
-
-// Add notification styles to the page
-const styleSheet = document.createElement('style');
-styleSheet.textContent = notificationStyles;
-document.head.appendChild(styleSheet);
+document.head.appendChild(toastStyle);
