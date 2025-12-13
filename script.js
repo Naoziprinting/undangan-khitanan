@@ -79,7 +79,7 @@ function initCreatorPage() {
     if (openSheetsBtn) {
         openSheetsBtn.addEventListener('click', function() {
             // Replace with your actual Google Sheets URL
-            window.open('https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit', '_blank');
+            window.open('https://docs.google.com/spreadsheets/d/1sw9t4cHBp0ymQhMWdrCGzqsOFaRjYra-opO77oyJKEI/edit?', '_blank');
         });
     }
     
