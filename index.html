@@ -199,6 +199,33 @@
             color: var(--dark);
         }
         
+        /* Location Section */
+        .location-section {
+            padding: 80px 0;
+        }
+        
+        .location-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .map-container {
+            width: 100%;
+            height: 450px;
+        }
+        
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .location-info {
+            padding: 30px;
+        }
+        
         /* Countdown */
         .countdown {
             background-color: var(--primary);
@@ -268,6 +295,12 @@
             transition: border 0.3s;
         }
         
+        .form-control:disabled {
+            background-color: #f5f5f5;
+            color: #666;
+            cursor: not-allowed;
+        }
+        
         .form-control:focus {
             outline: none;
             border-color: var(--primary);
@@ -293,6 +326,60 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
         
+        /* Confirmation Status */
+        .confirmation-status {
+            background-color: #f0f9f0;
+            border: 2px solid #2a6e3f;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .confirmation-status.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .status-icon {
+            font-size: 4rem;
+            color: #2a6e3f;
+            margin-bottom: 20px;
+        }
+        
+        .status-title {
+            font-size: 2rem;
+            color: #2a6e3f;
+            margin-bottom: 15px;
+        }
+        
+        .status-details {
+            text-align: left;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .status-row {
+            display: flex;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .status-label {
+            font-weight: 600;
+            width: 150px;
+            color: #555;
+        }
+        
+        .status-value {
+            flex: 1;
+            color: #333;
+        }
+        
         /* Footer */
         footer {
             background-color: var(--dark);
@@ -313,6 +400,35 @@
             color: rgba(255, 255, 255, 0.7);
         }
         
+        /* Music Control */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .music-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .music-btn:hover {
+            background-color: var(--dark);
+            transform: scale(1.1);
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 {
@@ -331,6 +447,10 @@
                 padding: 30px 20px;
             }
             
+            .confirmation-status {
+                padding: 20px;
+            }
+            
             .countdown-item {
                 min-width: 100px;
                 padding: 20px 15px;
@@ -339,6 +459,16 @@
             .countdown-number {
                 font-size: 2.2rem;
             }
+            
+            .map-container {
+                height: 300px;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         /* Loading Spinner */
@@ -360,29 +490,22 @@
         .hidden {
             display: none;
         }
-        
-        /* Message Styling */
-        .message {
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            text-align: center;
-        }
-        
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
     </style>
 </head>
 <body>
+    <!-- Audio Background -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-prayer-510.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <!-- Music Control -->
+    <div class="music-control">
+        <button id="musicToggle" class="music-btn">
+            <i class="fas fa-volume-up"></i>
+        </button>
+    </div>
+    
     <!-- Hero Section -->
     <section class="hero" id="hero">
         <div class="hero-content">
@@ -395,11 +518,7 @@
                 <i class="fas fa-spinner spinner"></i> Memuat nama tamu...
             </div>
             
-            <a href="#event-details" class="btn">Lihat Detail Acara <i class="fas fa-chevron-down"></i></a>
-        </div>
-        
-        <div class="scroll-indicator">
-            <i class="fas fa-chevron-down"></i>
+            <a href="#rsvp" class="btn">Konfirmasi Kehadiran <i class="fas fa-chevron-down"></i></a>
         </div>
     </section>
     
@@ -417,8 +536,8 @@
                 <div class="about-text">
                     <h3>Mohamad Farhan Bethafarazi</h3>
                     <p>Putra pertama dari pasangan Bapak Muhamad Soleh Saifudin dan Ibu Sri Listri Rahayu (Ibu Yayuk)</p>
-                    <p>Perumahan Green Garen Residen Blok C6 Rembang - Ngadiluwih</p>
-                     <p>Dengan memohon Rahmat dan Ridho Allah SWT, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri Khitanan Putra kami, yang InsyaAllah akan diselenggarakan pada :</p>
+                    <p>Perumahan Green Garden Residen Blok C6 Rembang - Ngadiluwih</p>
+                    <p>Dengan memohon Rahmat dan Ridho Allah SWT, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri Khitanan Putra kami</p>
                 </div>
             </div>
         </div>
@@ -447,8 +566,34 @@
                 <div class="detail-card">
                     <i class="fas fa-map-marker-alt"></i>
                     <h3>Tempat</h3>
-                    <p>Perumahan Green Garen Residen Blok C6 Rembang - Ngadiluwih</p>
+                    <p>Perumahan Green Garden Residen</p>
                     <p>Blok C6 Rembang - Ngadiluwih</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Location Section -->
+    <section id="location" class="location-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Lokasi Acara</h2>
+            </div>
+            
+            <div class="location-container">
+                <div class="map-container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3952.168977990445!2d111.99905447500585!3d-7.877381392144924!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zN8KwNTInMzguNiJTIDExMsKwMDAnMDUuOSJF!5e0!3m2!1sid!2sid!4v1765593888231!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+                <div class="location-info">
+                    <h3><i class="fas fa-map-pin"></i> Alamat Lengkap</h3>
+                    <p><strong>Perumahan Green Garden Residen</strong></p>
+                    <p>Blok C6, Rembang, Kecamatan Ngadiluwih</p>
+                    <p>Kabupaten Kediri, Jawa Timur 64171</p>
+                    <div style="margin-top: 20px;">
+                        <a href="https://maps.google.com/maps?q=-7.877381,111.999054" target="_blank" class="btn">
+                            <i class="fas fa-directions"></i> Buka di Google Maps
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -491,17 +636,20 @@
                 <form id="rsvpForm">
                     <div class="form-group">
                         <label for="name">Nama Lengkap *</label>
-                        <input type="text" id="name" class="form-control" required>
+                        <input type="text" id="name" class="form-control" disabled required>
+                        <small style="color: #666; font-size: 0.9rem;">
+                            <i class="fas fa-info-circle"></i> Nama terisi otomatis dari undangan Anda
+                        </small>
                     </div>
                     
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" class="form-control">
+                        <input type="email" id="email" class="form-control" placeholder="contoh@gmail.com">
                     </div>
                     
                     <div class="form-group">
                         <label for="phone">Nomor Telepon/WhatsApp *</label>
-                        <input type="tel" id="phone" class="form-control" required>
+                        <input type="tel" id="phone" class="form-control" required placeholder="0812-3456-7890">
                     </div>
                     
                     <div class="form-group">
@@ -527,16 +675,55 @@
                     
                     <div class="form-group">
                         <label for="message">Ucapan / Doa untuk Farhan</label>
-                        <textarea id="message" class="form-control" rows="4"></textarea>
+                        <textarea id="message" class="form-control" rows="4" placeholder="Tuliskan ucapan dan doa untuk Farhan..."></textarea>
                     </div>
                     
                     <button type="submit" class="btn" id="submitBtn">
                         <i class="fas fa-paper-plane"></i> Kirim Konfirmasi
                     </button>
-                    
-                    <!-- Message container -->
-                    <div id="messageContainer" class="hidden"></div>
                 </form>
+                
+                <!-- Confirmation Status -->
+                <div class="confirmation-status" id="confirmationStatus">
+                    <div class="status-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2 class="status-title">Konfirmasi Berhasil Dikirim!</h2>
+                    <p>Terima kasih atas konfirmasi kehadiran Anda. Data Anda telah tersimpan.</p>
+                    
+                    <div class="status-details">
+                        <div class="status-row">
+                            <div class="status-label">Status:</div>
+                            <div class="status-value" id="statusAttendance">-</div>
+                        </div>
+                        <div class="status-row">
+                            <div class="status-label">Nama:</div>
+                            <div class="status-value" id="statusName">-</div>
+                        </div>
+                        <div class="status-row">
+                            <div class="status-label">Telepon:</div>
+                            <div class="status-value" id="statusPhone">-</div>
+                        </div>
+                        <div class="status-row">
+                            <div class="status-label">Jumlah Tamu:</div>
+                            <div class="status-value" id="statusGuests">-</div>
+                        </div>
+                        <div class="status-row">
+                            <div class="status-label">Ucapan:</div>
+                            <div class="status-value" id="statusMessage">-</div>
+                        </div>
+                        <div class="status-row">
+                            <div class="status-label">Waktu:</div>
+                            <div class="status-value" id="statusTime">-</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <button class="btn" onclick="window.location.reload()">
+                            <i class="fas fa-redo"></i> Kirim Konfirmasi Lain
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -549,13 +736,13 @@
             <p>Keluarga Besar Muhamad Soleh Saifudin & Sri Listri Rahayu (Ibu Yayuk)</p>
             
             <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-                <p>© 2023 Undangan Khitanan Mohamad Farhan Bethafarazi. All rights reserved.</p>
+                <p>© 2025 Undangan Khitanan Mohamad Farhan Bethafarazi. All rights reserved.</p>
             </div>
         </div>
     </footer>
     
     <script>
-        // URL Google Apps Script Web App (akan diisi setelah deployment)
+        // URL Google Apps Script Web App
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxwqk6n_92StNVmDJPunlA--rMwNuusYcKqFnY2DPesPla8ByVc83mRhlyeRc157Z-n/exec';
         
         // Ambil parameter dari URL untuk mendapatkan nama tamu
@@ -568,9 +755,12 @@
         async function loadGuestName() {
             const guestId = getParameterByName('guest');
             const guestNameElement = document.getElementById('guestName');
+            const nameField = document.getElementById('name');
             
             if (!guestId) {
                 guestNameElement.innerHTML = "Kepada Yth. Bapak/Ibu/Saudara/i";
+                nameField.disabled = false;
+                nameField.placeholder = "Masukkan nama lengkap Anda";
                 return;
             }
             
@@ -579,13 +769,32 @@
                 const data = await response.json();
                 
                 if (data.success && data.guestName) {
-                    guestNameElement.innerHTML = `Kepada Yth. ${data.guestName}`;
+                    const guestName = data.guestName;
+                    
+                    // Tampilkan nama di hero section
+                    guestNameElement.innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                            <i class="fas fa-user-check" style="color: #2a6e3f;"></i>
+                            <div>
+                                <div>Kepada Yth.</div>
+                                <div style="font-size: 1.8rem; margin-top: 5px;">${guestName}</div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Isi otomatis field nama di form
+                    nameField.value = guestName;
+                    
                 } else {
                     guestNameElement.innerHTML = "Kepada Yth. Bapak/Ibu/Saudara/i";
+                    nameField.disabled = false;
+                    nameField.placeholder = "Masukkan nama lengkap Anda";
                 }
             } catch (error) {
                 console.error('Error loading guest name:', error);
                 guestNameElement.innerHTML = "Kepada Yth. Bapak/Ibu/Saudara/i";
+                nameField.disabled = false;
+                nameField.placeholder = "Masukkan nama lengkap Anda";
             }
         }
         
@@ -620,7 +829,7 @@
             
             const submitBtn = document.getElementById('submitBtn');
             const originalBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner spinner"></i> Mengirim...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
             submitBtn.disabled = true;
             
             const formData = {
@@ -633,7 +842,16 @@
                 guestId: getParameterByName('guest') || 'unknown'
             };
             
+            // Validasi form
+            if (!formData.phone || !formData.attendance || !formData.guests) {
+                alert('Harap lengkapi semua field yang wajib diisi!');
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+                return;
+            }
+            
             try {
+                // Kirim data ke Google Sheets
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -643,32 +861,98 @@
                     body: JSON.stringify(formData)
                 });
                 
-                // Karena mode no-cors, kita tidak bisa membaca response
-                // Tampilkan pesan sukses
-                showMessage('Terima kasih! Konfirmasi kehadiran Anda telah berhasil dikirim.', 'success');
-                
-                // Reset form
-                document.getElementById('rsvpForm').reset();
+                // Tampilkan status konfirmasi
+                showConfirmationStatus(formData);
                 
             } catch (error) {
                 console.error('Error submitting RSVP:', error);
-                showMessage('Maaf, terjadi kesalahan. Silakan coba lagi nanti.', 'error');
-            } finally {
+                alert('Maaf, terjadi kesalahan. Silakan coba lagi nanti.');
                 submitBtn.innerHTML = originalBtnText;
                 submitBtn.disabled = false;
             }
         }
         
-        // Show message
-        function showMessage(text, type) {
-            const messageContainer = document.getElementById('messageContainer');
-            messageContainer.innerHTML = `<div class="message ${type}">${text}</div>`;
-            messageContainer.classList.remove('hidden');
+        // Tampilkan status konfirmasi
+        function showConfirmationStatus(formData) {
+            // Sembunyikan form
+            document.getElementById('rsvpForm').style.display = 'none';
             
-            // Hide message after 5 seconds
-            setTimeout(() => {
-                messageContainer.classList.add('hidden');
-            }, 5000);
+            // Isi data di status konfirmasi
+            document.getElementById('statusName').textContent = formData.name;
+            document.getElementById('statusPhone').textContent = formData.phone;
+            document.getElementById('statusGuests').textContent = formData.guests + ' orang';
+            document.getElementById('statusMessage').textContent = formData.message || '-';
+            document.getElementById('statusTime').textContent = new Date().toLocaleString('id-ID');
+            
+            // Tentukan status kehadiran
+            let statusAttendance = '';
+            let statusIcon = '';
+            
+            if (formData.attendance === 'Hadir') {
+                statusAttendance = '<span style="color: #2a6e3f; font-weight: bold;">✓ Akan Hadir</span>';
+                statusIcon = '<i class="fas fa-check-circle" style="color: #2a6e3f;"></i>';
+            } else {
+                statusAttendance = '<span style="color: #dc3545; font-weight: bold;">✗ Tidak Hadir</span>';
+                statusIcon = '<i class="fas fa-times-circle" style="color: #dc3545;"></i>';
+            }
+            
+            document.getElementById('statusAttendance').innerHTML = statusAttendance;
+            document.querySelector('.status-icon').innerHTML = statusIcon;
+            
+            // Tampilkan status konfirmasi
+            document.getElementById('confirmationStatus').classList.add('show');
+            
+            // Scroll ke status konfirmasi
+            document.getElementById('confirmationStatus').scrollIntoView({ behavior: 'smooth' });
+            
+            // Putar suara konfirmasi
+            playConfirmationSound();
+        }
+        
+        // Putar suara konfirmasi
+        function playConfirmationSound() {
+            const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-magic-sparkles-300.mp3');
+            audio.volume = 0.5;
+            audio.play().catch(e => console.log('Audio play failed:', e));
+        }
+        
+        // Background Music Control
+        function setupMusicControl() {
+            const music = document.getElementById('backgroundMusic');
+            const toggleBtn = document.getElementById('musicToggle');
+            
+            // Set volume rendah
+            music.volume = 0.3;
+            
+            // Cek preferensi pengguna
+            const musicEnabled = localStorage.getItem('musicEnabled') !== 'false';
+            
+            if (musicEnabled) {
+                music.play().catch(e => console.log('Autoplay blocked:', e));
+                toggleBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+            } else {
+                toggleBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+            
+            // Toggle music
+            toggleBtn.addEventListener('click', () => {
+                if (music.paused) {
+                    music.play();
+                    toggleBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                    localStorage.setItem('musicEnabled', 'true');
+                } else {
+                    music.pause();
+                    toggleBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                    localStorage.setItem('musicEnabled', 'false');
+                }
+            });
+            
+            // Auto play ketika user berinteraksi
+            document.addEventListener('click', () => {
+                if (music.paused && localStorage.getItem('musicEnabled') !== 'false') {
+                    music.play().catch(e => console.log('Play failed:', e));
+                }
+            }, { once: true });
         }
         
         // Smooth scrolling for anchor links
@@ -700,6 +984,16 @@
             
             // Setup form submission
             document.getElementById('rsvpForm').addEventListener('submit', submitRSVP);
+            
+            // Setup music control
+            setupMusicControl();
+            
+            // Auto scroll ke form jika ada parameter rsvp
+            if (getParameterByName('rsvp') === 'true') {
+                setTimeout(() => {
+                    document.getElementById('rsvp').scrollIntoView({ behavior: 'smooth' });
+                }, 1000);
+            }
         });
     </script>
 </body>
