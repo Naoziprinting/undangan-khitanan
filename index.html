@@ -3,175 +3,704 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator Undangan Khitanan - Admin</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Undangan Khitanan | Rayyan Al-Fareez</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2a6e3f;
+            --secondary: #d4af37;
+            --light: #f8f9fa;
+            --dark: #1a472a;
+            --gray: #6c757d;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header & Hero */
+        .hero {
+            background: linear-gradient(rgba(42, 110, 63, 0.85), rgba(42, 110, 63, 0.9)), url('https://images.unsplash.com/photo-1542744095-fcf48d80b0fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1776&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 4.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero h2 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero .guest-name {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: var(--primary);
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+        }
+        
+        /* Section Styling */
+        section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+        
+        .section-title h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary);
+        }
+        
+        /* About Section */
+        .about-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 50px;
+        }
+        
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s;
+        }
+        
+        .about-image img:hover {
+            transform: scale(1.03);
+        }
+        
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .about-text h3 {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 20px;
+        }
+        
+        .about-text p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: var(--gray);
+        }
+        
+        /* Event Details */
+        .event-details {
+            background-color: var(--light);
+        }
+        
+        .details-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .detail-card {
+            background-color: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+        
+        .detail-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .detail-card i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .detail-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        /* Countdown */
+        .countdown {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+        }
+        
+        .countdown-title {
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+        }
+        
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .countdown-item {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 25px 20px;
+            border-radius: 10px;
+            min-width: 120px;
+        }
+        
+        .countdown-number {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .countdown-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* RSVP Form */
+        .rsvp-form {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: border 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            background-color: var(--dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 60px 20px 30px;
+        }
+        
+        .footer-logo {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .footer-text {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+            
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .rsvp-form {
+                padding: 30px 20px;
+            }
+            
+            .countdown-item {
+                min-width: 100px;
+                padding: 20px 15px;
+            }
+            
+            .countdown-number {
+                font-size: 2.2rem;
+            }
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Message Styling */
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
 </head>
 <body>
-    <div class="admin-container">
-        <header class="admin-header">
-            <h1><i class="fas fa-magic"></i> Generator Undangan Digital</h1>
-            <p class="subtitle">Khitanan Anak - Buat dan Kelola Undangan Elegan</p>
-        </header>
-
-        <main class="admin-main">
-            <div class="admin-card">
-                <div class="card-header">
-                    <h2><i class="fas fa-user-plus"></i> Buat Undangan Baru</h2>
-                    <p>Isi data tamu untuk menghasilkan link undangan personal</p>
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <h1>Undangan Khitanan</h1>
+            <h2>Rayyan Al-Fareez</h2>
+            <p>Dengan penuh rasa syukur dan bahagia, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dalam acara khitanan putra kami</p>
+            
+            <!-- Nama Tamu Akan Dimuat di Sini -->
+            <div class="guest-name" id="guestName">
+                <i class="fas fa-spinner spinner"></i> Memuat nama tamu...
+            </div>
+            
+            <a href="#event-details" class="btn">Lihat Detail Acara <i class="fas fa-chevron-down"></i></a>
+        </div>
+        
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>Tentang Rayyan</h2>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Rayyan Al-Fareez">
+                </div>
+                <div class="about-text">
+                    <h3>Rayyan Al-Fareez</h3>
+                    <p>Putra pertama dari pasangan Bapak Ahmad Fauzi dan Ibu Siti Nurhaliza, Rayyan lahir pada tanggal 15 Maret 2015 di Bandung. Saat ini Rayyan telah berusia 8 tahun dan bersekolah di SD Al-Azhar Bandung.</p>
+                    <p>Rayyan adalah anak yang ceria, pintar, dan berbakti kepada orang tua. Dia menyukai olahraga sepak bola, membaca buku, dan belajar hal-hal baru tentang sains.</p>
+                    <p>Acara khitanan ini merupakan momen penting dalam perjalanan hidup Rayyan sebagai seorang muslim. Kami berharap doa dan restu dari Bapak/Ibu/Saudara/i sekalian untuk keberkahan dan keselamatan Rayyan dalam menjalani proses ini.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Event Details -->
+    <section id="event-details" class="event-details">
+        <div class="container">
+            <div class="section-title">
+                <h2>Detail Acara</h2>
+            </div>
+            
+            <div class="details-container">
+                <div class="detail-card">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>Hari & Tanggal</h3>
+                    <p>Sabtu, 15 Juli 2023</p>
                 </div>
                 
-                <form id="guestForm" class="admin-form">
+                <div class="detail-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>Waktu</h3>
+                    <p>Pukul 10:00 WIB - Selesai</p>
+                </div>
+                
+                <div class="detail-card">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Tempat</h3>
+                    <p>Ballroom Hotel Grand Santika</p>
+                    <p>Jl. Merdeka No. 123, Bandung</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Countdown -->
+    <section class="countdown">
+        <div class="container">
+            <h2 class="countdown-title">Menuju Hari Bahagia</h2>
+            <div class="countdown-container">
+                <div class="countdown-item">
+                    <div class="countdown-number" id="days">00</div>
+                    <div class="countdown-label">Hari</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="hours">00</div>
+                    <div class="countdown-label">Jam</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="minutes">00</div>
+                    <div class="countdown-label">Menit</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="seconds">00</div>
+                    <div class="countdown-label">Detik</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- RSVP Form -->
+    <section id="rsvp">
+        <div class="container">
+            <div class="section-title">
+                <h2>Konfirmasi Kehadiran</h2>
+                <p>Mohon konfirmasi kehadiran Anda sebelum tanggal 10 Juli 2023</p>
+            </div>
+            
+            <div class="rsvp-form">
+                <form id="rsvpForm">
                     <div class="form-group">
-                        <label for="guestName"><i class="fas fa-user"></i> Nama Tamu</label>
-                        <input type="text" id="guestName" placeholder="Contoh: Bapak/Ibu Budi Santoso" required>
+                        <label for="name">Nama Lengkap *</label>
+                        <input type="text" id="name" class="form-control" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="guestGroup"><i class="fas fa-users"></i> Grup/Kategori Tamu</label>
-                        <select id="guestGroup" required>
-                            <option value="">Pilih kategori</option>
-                            <option value="keluarga">Keluarga</option>
-                            <option value="teman">Teman Orang Tua</option>
-                            <option value="saudara">Saudara</option>
-                            <option value="tetangga">Tetangga</option>
-                            <option value="rekan">Rekan Kerja</option>
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Nomor Telepon/WhatsApp *</label>
+                        <input type="tel" id="phone" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="attendance">Konfirmasi Kehadiran *</label>
+                        <select id="attendance" class="form-control" required>
+                            <option value="">Pilih Konfirmasi</option>
+                            <option value="Hadir">Ya, Saya akan Hadir</option>
+                            <option value="Tidak Hadir">Maaf, Saya Tidak Dapat Hadir</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
-                        <label for="additionalNote"><i class="fas fa-sticky-note"></i> Catatan Tambahan (Opsional)</label>
-                        <textarea id="additionalNote" rows="3" placeholder="Tambahkan catatan khusus untuk tamu ini"></textarea>
+                        <label for="guests">Jumlah Tamu (Termasuk Anda) *</label>
+                        <select id="guests" class="form-control" required>
+                            <option value="">Pilih Jumlah Tamu</option>
+                            <option value="1">1 Orang</option>
+                            <option value="2">2 Orang</option>
+                            <option value="3">3 Orang</option>
+                            <option value="4">4 Orang</option>
+                            <option value="5">5 Orang atau lebih</option>
+                        </select>
                     </div>
                     
-                    <div class="form-actions">
-                        <button type="submit" class="btn-generate">
-                            <i class="fas fa-link"></i> Generate Link Undangan
-                        </button>
-                        <button type="button" class="btn-reset" id="resetBtn">
-                            <i class="fas fa-redo"></i> Reset Form
-                        </button>
+                    <div class="form-group">
+                        <label for="message">Ucapan / Doa untuk Rayyan</label>
+                        <textarea id="message" class="form-control" rows="4"></textarea>
                     </div>
+                    
+                    <button type="submit" class="btn" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i> Kirim Konfirmasi
+                    </button>
+                    
+                    <!-- Message container -->
+                    <div id="messageContainer" class="hidden"></div>
                 </form>
-                
-                <div class="result-section" id="resultSection" style="display: none;">
-                    <h3><i class="fas fa-check-circle"></i> Link Undangan Berhasil Dibuat!</h3>
-                    <div class="link-container">
-                        <input type="text" id="generatedLink" readonly>
-                        <button class="btn-copy" id="copyBtn">
-                            <i class="far fa-copy"></i> Salin
-                        </button>
-                    </div>
-                    <p class="link-instruction">
-                        <i class="fas fa-info-circle"></i> Link ini dapat dibagikan ke tamu. Nama tamu akan otomatis muncul saat link dibuka.
-                    </p>
-                    
-                    <div class="preview-section">
-                        <h4><i class="fas fa-eye"></i> Preview Undangan</h4>
-                        <div class="preview-card">
-                            <div class="preview-header">
-                                <h5>Undangan Khitanan</h5>
-                                <p class="preview-guest">Untuk: <span id="previewGuestName">Nama Tamu</span></p>
-                            </div>
-                            <div class="preview-body">
-                                <p>Ini adalah preview tampilan undangan yang akan dilihat oleh tamu.</p>
-                                <button class="btn-preview" id="previewBtn">Lihat Preview Lengkap</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-logo">Rayyan Al-Fareez</div>
+            <p class="footer-text">Atas kehadiran dan doa restu Bapak/Ibu/Saudara/i sekalian, kami mengucapkan terima kasih yang sebesar-besarnya. Semoga Allah SWT membalas segala kebaikan kita semua.</p>
+            <p>Keluarga Besar Ahmad Fauzi & Siti Nurhaliza</p>
             
-            <div class="admin-card">
-                <div class="card-header">
-                    <h2><i class="fas fa-database"></i> Database Undangan</h2>
-                    <p>Kelola semua undangan yang telah dibuat</p>
-                </div>
-                
-                <div class="database-controls">
-                    <button class="btn-refresh" id="refreshDbBtn">
-                        <i class="fas fa-sync-alt"></i> Refresh Data
-                    </button>
-                    <button class="btn-export" id="exportBtn">
-                        <i class="fas fa-file-export"></i> Export ke CSV
-                    </button>
-                </div>
-                
-                <div class="table-container">
-                    <table id="guestTable">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Nama Tamu</th>
-                                <th>Link Undangan</th>
-                                <th>Tanggal Dibuat</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="guestTableBody">
-                            <tr>
-                                <td colspan="6" class="loading-data">Memuat data...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="stats-container">
-                    <div class="stat-card">
-                        <h3 id="totalGuests">0</h3>
-                        <p>Total Tamu</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3 id="openedGuests">0</h3>
-                        <p>Sudah Dibuka</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3 id="messageCount">0</h3>
-                        <p>Ucapan Diterima</p>
-                    </div>
-                </div>
+            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                <p>© 2023 Undangan Khitanan Rayyan Al-Fareez. All rights reserved.</p>
             </div>
-        </main>
+        </div>
+    </footer>
+    
+    <script>
+        // URL Google Apps Script Web App (akan diisi setelah deployment)
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxwqk6n_92StNVmDJPunlA--rMwNuusYcKqFnY2DPesPla8ByVc83mRhlyeRc157Z-n/exec';
         
-        <footer class="admin-footer">
-            <p>© 2023 Undangan Khitanan Digital | Hosted on GitHub Pages</p>
-            <p class="footer-links">
-                <a href="#" id="viewMessagesBtn"><i class="fas fa-comments"></i> Lihat Ucapan Tamu</a>
-                <a href="#" id="settingsBtn"><i class="fas fa-cog"></i> Pengaturan</a>
-            </p>
-        </footer>
-    </div>
-
-    <!-- Modal untuk Preview -->
-    <div id="previewModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Preview Undangan</h3>
-                <span class="close-modal">&times;</span>
-            </div>
-            <div class="modal-body">
-                <iframe id="previewFrame" src="about:blank"></iframe>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal untuk Ucapan Tamu -->
-    <div id="messagesModal" class="modal">
-        <div class="modal-content wide-modal">
-            <div class="modal-header">
-                <h3><i class="fas fa-comments"></i> Ucapan dari Tamu</h3>
-                <span class="close-modal">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="messages-container" id="messagesContainer">
-                    <p class="loading-data">Memuat ucapan...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+        // Ambil parameter dari URL untuk mendapatkan nama tamu
+        function getParameterByName(name) {
+            const url = new URL(window.location.href);
+            return url.searchParams.get(name);
+        }
+        
+        // Fungsi untuk memuat nama tamu dari Google Sheets
+        async function loadGuestName() {
+            const guestId = getParameterByName('guest');
+            const guestNameElement = document.getElementById('guestName');
+            
+            if (!guestId) {
+                guestNameElement.innerHTML = "Kepada Yth. Bapak/Ibu/Saudara/i";
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getGuest&id=${guestId}`);
+                const data = await response.json();
+                
+                if (data.success && data.guestName) {
+                    guestNameElement.innerHTML = `Kepada Yth. ${data.guestName}`;
+                } else {
+                    guestNameElement.innerHTML = "Kepada Yth. Bapak/Ibu/Saudara/i";
+                }
+            } catch (error) {
+                console.error('Error loading guest name:', error);
+                guestNameElement.innerHTML = "Kepada Yth. Bapak/Ibu/Saudara/i";
+            }
+        }
+        
+        // Countdown Timer
+        function updateCountdown() {
+            const eventDate = new Date('July 15, 2023 10:00:00').getTime();
+            const now = new Date().getTime();
+            const timeLeft = eventDate - now;
+            
+            if (timeLeft < 0) {
+                document.getElementById('days').innerHTML = '00';
+                document.getElementById('hours').innerHTML = '00';
+                document.getElementById('minutes').innerHTML = '00';
+                document.getElementById('seconds').innerHTML = '00';
+                return;
+            }
+            
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').innerHTML = days.toString().padStart(2, '0');
+            document.getElementById('hours').innerHTML = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').innerHTML = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').innerHTML = seconds.toString().padStart(2, '0');
+        }
+        
+        // Handle RSVP Form Submission
+        async function submitRSVP(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner spinner"></i> Mengirim...';
+            submitBtn.disabled = true;
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                attendance: document.getElementById('attendance').value,
+                guests: document.getElementById('guests').value,
+                message: document.getElementById('message').value,
+                guestId: getParameterByName('guest') || 'unknown'
+            };
+            
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                // Karena mode no-cors, kita tidak bisa membaca response
+                // Tampilkan pesan sukses
+                showMessage('Terima kasih! Konfirmasi kehadiran Anda telah berhasil dikirim.', 'success');
+                
+                // Reset form
+                document.getElementById('rsvpForm').reset();
+                
+            } catch (error) {
+                console.error('Error submitting RSVP:', error);
+                showMessage('Maaf, terjadi kesalahan. Silakan coba lagi nanti.', 'error');
+            } finally {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        }
+        
+        // Show message
+        function showMessage(text, type) {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.innerHTML = `<div class="message ${type}">${text}</div>`;
+            messageContainer.classList.remove('hidden');
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                messageContainer.classList.add('hidden');
+            }, 5000);
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load guest name
+            loadGuestName();
+            
+            // Initialize countdown
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+            
+            // Setup form submission
+            document.getElementById('rsvpForm').addEventListener('submit', submitRSVP);
+        });
+    </script>
 </body>
 </html>
