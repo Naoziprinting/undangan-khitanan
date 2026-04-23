@@ -466,6 +466,64 @@
         const settingsForm = document.getElementById('settingsForm');
         const saveAlert = document.getElementById('saveAlert');
 
+        // Date Picker Sync & Formatting
+        function updateDateStrings() {
+            const datePicker = document.getElementById('event_date_picker');
+            const displayInput = document.getElementById('event_date_display');
+            
+            if (!datePicker || !displayInput) return;
+            
+            const dateVal = datePicker.value; // yyyy-mm-dd
+            if (!dateVal) return;
+
+            const date = new Date(dateVal);
+            // Format: Sabtu, 04 April 2026
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const indonesianDate = date.toLocaleDateString('id-ID', options);
+            
+            displayInput.value = indonesianDate;
+        }
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const saved = localStorage.getItem('invitationSettings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                
+                if (settings.event_date_iso) {
+                    let targetDateStr = settings.event_date_iso.split('T')[0];
+                    if (settings.event_time_val_iso) {
+                        targetDateStr += 'T' + settings.event_time_val_iso;
+                    } else {
+                        targetDateStr += 'T08:00:00';
+                    }
+                }
+                
+                Object.keys(settings).forEach(key => {
+                    const inputs = settingsForm.querySelectorAll(`[name="${key}"]`);
+                    inputs.forEach(input => {
+                        if (input.type === 'checkbox') {
+                            input.checked = settings[key] === 'on';
+                        } else {
+                            input.value = settings[key];
+                        }
+                    });
+                });
+                // Sync date strings after loading
+                updateDateStrings();
+            }
+        }
+
+        function showDashboard() {
+            loginSection.style.display = 'none';
+            dashboardSection.style.display = 'block';
+            loadSettings();
+            
+            // Add event listeners for pickers after they are visible
+            const dp = document.getElementById('event_date_picker');
+            if (dp) dp.addEventListener('change', updateDateStrings);
+        }
+
         // Check login status
         if (sessionStorage.getItem('adminLoggedIn') === 'true') {
             showDashboard();
@@ -490,32 +548,6 @@
             sessionStorage.removeItem('adminLoggedIn');
             location.reload();
         });
-
-        function showDashboard() {
-            loginSection.style.display = 'none';
-            dashboardSection.style.display = 'block';
-            loadSettings();
-        }
-
-        // Load settings from localStorage
-        function loadSettings() {
-            const saved = localStorage.getItem('invitationSettings');
-            if (saved) {
-                const settings = JSON.parse(saved);
-                Object.keys(settings).forEach(key => {
-                    const inputs = settingsForm.querySelectorAll(`[name="${key}"]`);
-                    inputs.forEach(input => {
-                        if (input.type === 'checkbox') {
-                            input.checked = settings[key] === 'on';
-                        } else {
-                            input.value = settings[key];
-                        }
-                    });
-                });
-                // Sync date strings after loading
-                if (typeof updateDateStrings === 'function') updateDateStrings();
-            }
-        }
 
         // Save settings
         settingsForm.addEventListener('submit', async (e) => {
@@ -568,28 +600,6 @@
                 setTimeout(() => saveAlert.style.display = 'none', 5000);
             }
         });
-
-        // Date Picker Sync
-        const datePicker = document.getElementById('event_date_picker');
-        const timePicker = document.getElementById('event_time_picker');
-        const displayInput = document.getElementById('event_date_display');
-
-        function updateDateStrings() {
-            const dateVal = datePicker.value; // yyyy-mm-dd
-            if (!dateVal) return;
-
-            const date = new Date(dateVal);
-            // Format: Minggu, 19 April 2026
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const indonesianDate = date.toLocaleDateString('id-ID', options);
-            
-            displayInput.value = indonesianDate;
-        }
-
-        datePicker.addEventListener('change', updateDateStrings);
-        
-        // Initial sync
-        updateDateStrings();
     </script>
 </body>
 </html>

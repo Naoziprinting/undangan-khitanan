@@ -3002,11 +3002,13 @@
             if (saved) {
                 const settings = JSON.parse(saved);
                 if (settings.event_date_iso) {
-                    targetDateStr = settings.event_date_iso;
-                    // Combine with time if available, otherwise default to 08:00
+                    // Gunakan hanya bagian tanggal jika berisi waktu (YYYY-MM-DD)
+                    targetDateStr = settings.event_date_iso.split('T')[0];
+                    
+                    // Gabungkan dengan jam dari settings jika ada, jika tidak gunakan default 08:00
                     if (settings.event_time_val_iso) {
                         targetDateStr += 'T' + settings.event_time_val_iso;
-                    } else if (!targetDateStr.includes('T')) {
+                    } else {
                         targetDateStr += 'T08:00:00';
                     }
                 }
