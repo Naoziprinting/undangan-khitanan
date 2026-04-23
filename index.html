@@ -2537,7 +2537,7 @@
         <div class="container">
             <div class="section-title">
                 <h2>Konfirmasi Kehadiran</h2>
-                <p class="section-subtitle">Mohon konfirmasi kehadiran Anda sebelum 29 Maret 2026</p>
+                <p class="section-subtitle">Mohon konfirmasi kehadiran Anda sebelum <span id="rsvp_deadline_date">29 Maret 2026</span></p>
             </div>
             
             <div class="rsvp-form">
@@ -3648,6 +3648,19 @@
                             el.textContent = settings.event_date;
                         }
                     });
+                }
+                
+                // Update RSVP Deadline (7 days before event)
+                let rsvpTargetDateStr = settings.event_date_iso || '2026-04-04T08:00:00';
+                if (rsvpTargetDateStr.includes(' ') && !rsvpTargetDateStr.includes('T')) {
+                    rsvpTargetDateStr = rsvpTargetDateStr.replace(' ', 'T');
+                }
+                const eventDateObj = new Date(rsvpTargetDateStr);
+                if (!isNaN(eventDateObj.getTime())) {
+                    const deadlineDate = new Date(eventDateObj.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    const deadlineStr = deadlineDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+                    const rsvpDeadlineEl = document.getElementById('rsvp_deadline_date');
+                    if (rsvpDeadlineEl) rsvpDeadlineEl.textContent = deadlineStr;
                 }
                 if (settings.show_event_date === 'off') {
                     const dateCards = document.querySelectorAll('.detail-card');
