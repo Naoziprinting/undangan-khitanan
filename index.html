@@ -2248,6 +2248,17 @@
         }
     </style>
 </head>
+<body class="locked">
+    <!-- Global Preloader -->
+    <div id="preloader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <div style="width: 60px; height: 60px; border: 5px solid #f3f3f3; border-top: 5px solid #D4AF37; border-radius: 50%; animation: preloader-spin 1s linear infinite; margin-bottom: 20px;"></div>
+        <p style="font-family: 'Poppins', sans-serif; color: #D4AF37; letter-spacing: 2px; font-size: 0.9rem; text-transform: uppercase;">Menyiapkan Undangan...</p>
+    </div>
+    <style>
+        @keyframes preloader-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #preloader.fade-out { opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0.5s ease; }
+    </style>
+
     <div id="intro" class="intro-screen">
         <div class="intro-content">
             <div class="intro-badge">The Invitation Of</div>
@@ -3409,7 +3420,19 @@
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', async function() {
             // Apply Dynamic Settings from Cloud
-            await applyDynamicSettings();
+            try {
+                await applyDynamicSettings();
+                await loadGuestName();
+            } catch (err) {
+                console.error("Initialization error:", err);
+            } finally {
+                // Hide preloader after everything is loaded
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.classList.add('fade-out');
+                    setTimeout(() => preloader.style.display = 'none', 500);
+                }
+            }
             
             const intro = document.getElementById('intro');
             const mainContent = document.getElementById('mainContent');
