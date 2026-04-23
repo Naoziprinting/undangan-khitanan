@@ -2192,6 +2192,22 @@
             to { transform: rotate(360deg); }
         }
         
+        /* Refined Intro & Hero */
+        .intro-badge { margin-bottom: 20px; opacity: 0.8; letter-spacing: 5px; text-transform: uppercase; font-size: 0.9rem; }
+        .intro-divider { width: 100px; height: 2px; background: var(--gradient); margin: 30px auto; }
+        .intro-recipient { margin-bottom: 15px; font-size: 1.1rem; letter-spacing: 1px; font-family: 'Cormorant Garamond', serif; }
+        .intro-guest-name { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 50px; color: var(--primary-light); }
+        
+        .hero-tagline-box { display: inline-block; padding: 5px 20px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; margin-bottom: 15px; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); }
+        .hero-desc { max-width: 600px; margin: 0 auto 30px; font-size: 1.1rem; line-height: 1.6; opacity: 0.9; }
+        .btn-hero { 
+            display: inline-block; padding: 15px 40px; background: var(--gradient); color: white; 
+            border-radius: 50px; text-decoration: none; font-weight: 600; letter-spacing: 1px;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); transition: all 0.3s ease;
+            animation: floating 3s ease-in-out infinite;
+        }
+        .btn-hero:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.5); }
+        
         .music-btn.playing i {
             animation: rotate 3s linear infinite;
         }
@@ -2215,15 +2231,14 @@
         }
     </style>
 </head>
-    <!-- Intro Screen -->
     <div id="intro" class="intro-screen">
         <div class="intro-content">
-            <div style="margin-bottom: 20px; opacity: 0.8; letter-spacing: 5px; text-transform: uppercase; font-size: 0.9rem;">The Invitation Of</div>
+            <div class="intro-badge">The Invitation Of</div>
             <div class="intro-title">Walimatul Khitan</div>
             <div class="intro-names" id="intro_names_val">Putra Tercinta</div>
-            <div style="width: 100px; height: 2px; background: var(--gradient); margin: 30px auto;"></div>
-            <p style="margin-bottom: 15px; font-size: 1.1rem; letter-spacing: 1px; font-family: 'Cormorant Garamond', serif;">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
-            <h3 id="introGuestName" style="font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 50px; color: var(--primary-light);">Tamu Undangan</h3>
+            <div class="intro-divider"></div>
+            <p class="intro-recipient">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
+            <h3 id="introGuestName" class="intro-guest-name">Tamu Undangan</h3>
             <button id="openInvitation" class="btn pulse">
                 <i class="fas fa-envelope-open-text"></i> Buka Undangan
             </button>
@@ -2235,9 +2250,8 @@
         <!-- Floating Particles Container -->
         <div id="particles" class="particles"></div>
 
-        <!-- Audio Background -->
         <audio id="backgroundMusic" loop preload="auto">
-            <source src="videoplayback (mp3cut.net).mp3" type="audio/mp3">
+            <source src="Maher Zain - Rahmatun Lil’Alameen _ Official Lyric Video _ ماهر زين - رحمةٌ للعالمين (320).mp3" type="audio/mp3">
             Your browser does not support the audio element.
         </audio>
     
@@ -2276,19 +2290,22 @@
         <div class="lightbox-nav lightbox-next" id="lightboxNext">&#10095;</div>
     </div>
     
-    <!-- Hero Section -->
     <section class="hero" id="hero">
         <div class="hero-content">
-            <h1 id="hero_tagline_val">Walimatul Khitan</h1>
+            <div class="hero-tagline-box">
+                <h1 id="hero_tagline_val">Walimatul Khitan</h1>
+            </div>
             <h2 id="hero_names_val">Putra Tercinta</h2>
-            <p>Dengan penuh rasa syukur dan bahagia, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dalam acara khitanan putra kami</p>
+            <div class="hero-desc">
+                <p>Dengan penuh rasa syukur dan bahagia, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dalam acara khitanan putra kami</p>
+            </div>
             
             <!-- Nama Tamu Akan Dimuat di Sini -->
             <div class="guest-name" id="guestName">
                 <i class="fas fa-spinner spinner"></i> Memuat nama tamu...
             </div>
             
-            <a href="#rsvp" class="btn floating">Konfirmasi Kehadiran <i class="fas fa-chevron-down"></i></a>
+            <a href="#rsvp" class="btn-hero">Konfirmasi Kehadiran <i class="fas fa-chevron-down"></i></a>
         </div>
     </section>
 
@@ -2439,9 +2456,33 @@
                     <p id="entertainment_val">Elekton Plus</p>
                 </div>
             </div>
-        </div>
     </section>
     
+    <!-- Countdown Moved Here -->
+    <section id="countdown_section" class="countdown section-collage" style="background: rgba(212, 175, 55, 0.05); padding: 80px 0;">
+        <div class="container">
+            <h2 class="countdown-title">Menuju Hari Bahagia</h2>
+            <div class="countdown-container">
+                <div class="countdown-item">
+                    <div class="countdown-number" id="days">00</div>
+                    <div class="countdown-label">Hari</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="hours">00</div>
+                    <div class="countdown-label">Jam</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="minutes">00</div>
+                    <div class="countdown-label">Menit</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="seconds">00</div>
+                    <div class="countdown-label">Detik</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Location Section -->
     <section id="location" class="location-section section-collage">
         <div class="container">
@@ -2468,32 +2509,7 @@
             </div>
         </div>
     </section>
-    
-    <!-- Countdown -->
-    <section id="countdown_section" class="countdown section-collage">
-        <div class="container">
-            <h2 class="countdown-title">Menuju Hari Bahagia</h2>
-            <div class="countdown-container">
-                <div class="countdown-item">
-                    <div class="countdown-number" id="days">00</div>
-                    <div class="countdown-label">Hari</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-number" id="hours">00</div>
-                    <div class="countdown-label">Jam</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-number" id="minutes">00</div>
-                    <div class="countdown-label">Menit</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-number" id="seconds">00</div>
-                    <div class="countdown-label">Detik</div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
+
     <!-- RSVP Form -->
     <section id="rsvp_section" class="rsvp section-collage">
         <div class="container">
