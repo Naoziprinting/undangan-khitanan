@@ -3407,9 +3407,9 @@
         });
         
         // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Apply Dynamic Settings
-            applyDynamicSettings();
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Apply Dynamic Settings from Cloud
+            await applyDynamicSettings();
             
             const intro = document.getElementById('intro');
             const mainContent = document.getElementById('mainContent');
@@ -3564,11 +3564,33 @@
             
             resetAutoSlide();
         }
-        // Apply dynamic settings from localStorage
-        function applyDynamicSettings() {
+        // Apply dynamic settings from Cloud (Google Sheets)
+        async function applyDynamicSettings() {
+            // 1. Coba ambil dari Cloud (Sinkronisasi Global)
+            try {
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getSettings`);
+                const result = await response.json();
+                
+                if (result.success && result.settings) {
+                    // Simpan di localStorage sebagai cache (supaya cepat di pemuatan berikutnya)
+                    localStorage.setItem('invitationSettings', JSON.stringify(result.settings));
+                    renderSettings(result.settings);
+                    return;
+                }
+            } catch (error) {
+                console.warn('Gagal memuat pengaturan dari Cloud, menggunakan cache lokal:', error);
+            }
+
+            // 2. Fallback ke Local Storage jika Cloud gagal atau lambat
             const saved = localStorage.getItem('invitationSettings');
             if (saved) {
-                const settings = JSON.parse(saved);
+                renderSettings(JSON.parse(saved));
+            }
+        }
+
+        // Fungsi Render untuk memperbarui UI berdasarkan pengaturan
+        function renderSettings(settings) {
+            if (settings) {
                 
                 // Background Photos (Intro & Hero)
                 if (settings.photo_cover) {

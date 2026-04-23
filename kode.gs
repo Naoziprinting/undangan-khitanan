@@ -4,6 +4,7 @@
 // Nama sheet dalam spreadsheet
 var GUEST_SHEET_NAME = 'DaftarTamu';
 var RSVP_SHEET_NAME = 'Konfirmasi';
+var SETTINGS_SHEET_NAME = 'Settings';
 
 // Fungsi untuk mendapatkan nama tamu berdasarkan ID
 function doGet(e) {
@@ -35,6 +36,8 @@ function doGet(e) {
     return getComments();
   } else if (action === 'getCommentsTest') {
     return getCommentsTest();
+  } else if (action === 'getSettings') {
+    return getSettings();
   } else if (action === 'testConnection') {
     return ContentService
       .createTextOutput(JSON.stringify(testConnection()))
@@ -72,6 +75,11 @@ function doPost(e) {
     }
     
     var data = JSON.parse(e.postData.contents);
+    
+    if (data.action === 'saveSettings') {
+      return saveSettings(data.settings);
+    }
+    
     return saveRSVP(data);
     
   } catch (error) {
@@ -1167,5 +1175,90 @@ function viewRawData() {
     
   } catch (error) {
     return 'Error: ' + error.toString();
+  }
+}
+
+// Fungsi untuk mendapatkan pengaturan undangan
+function getSettings() {
+  try {
+    var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = spreadsheet.getSheetByName(SETTINGS_SHEET_NAME);
+    
+    if (!sheet) {
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          success: false, 
+          message: 'Settings sheet not found'
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    var data = sheet.getDataRange().getValues();
+    var settings = {};
+    
+    // Mulai dari baris 2 (lewatkan header)
+    for (var i = 1; i < data.length; i++) {
+      if (data[i][0]) {
+        settings[data[i][0]] = data[i][1];
+      }
+    }
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true, 
+        settings: settings
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false, 
+        message: error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Fungsi untuk menyimpan pengaturan undangan
+function saveSettings(settings) {
+  try {
+    var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = spreadsheet.getSheetByName(SETTINGS_SHEET_NAME);
+    
+    if (!sheet) {
+      sheet = spreadsheet.insertSheet(SETTINGS_SHEET_NAME);
+      sheet.appendRow(['Key', 'Value']);
+    }
+    
+    // Bersihkan data lama kecuali header
+    if (sheet.getLastRow() > 1) {
+      sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).clearContent();
+    }
+    
+    // Masukkan data baru
+    var rows = [];
+    for (var key in settings) {
+      rows.push([key, settings[key]]);
+    }
+    
+    if (rows.length > 0) {
+      sheet.getRange(2, 1, rows.length, 2).setValues(rows);
+    }
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true, 
+        message: 'Settings saved to Cloud'
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false, 
+        message: error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
   }
 }

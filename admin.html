@@ -457,6 +457,7 @@
             user: 'admin',
             pass: 'khitanan2026'
         };
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxwqk6n_92StNVmDJPunlA--rMwNuusYcKqFnY2DPesPla8ByVc83mRhlyeRc157Z-n/exec';
 
         const loginForm = document.getElementById('loginForm');
         const loginSection = document.getElementById('loginSection');
@@ -516,8 +517,14 @@
         }
 
         // Save settings
-        settingsForm.addEventListener('submit', (e) => {
+        settingsForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const submitBtn = settingsForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan ke Cloud...';
+            
             const settings = {};
             
             // Collect all inputs including unchecked checkboxes
@@ -530,12 +537,35 @@
                 }
             });
 
+            // Local save (fast)
             localStorage.setItem('invitationSettings', JSON.stringify(settings));
             
-            saveAlert.style.display = 'block';
-            setTimeout(() => saveAlert.style.display = 'none', 3000);
-            
-            console.log('Settings Saved:', settings);
+            try {
+                // Cloud save (global sync)
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'saveSettings',
+                        settings: settings
+                    })
+                });
+                
+                // Show success alert
+                saveAlert.className = 'alert alert-success';
+                saveAlert.innerHTML = '<i class="fas fa-check-circle"></i> Berhasil! Perubahan telah tersimpan di Cloud dan akan terlihat di semua browser.';
+                saveAlert.style.display = 'block';
+            } catch (error) {
+                console.error('Cloud save error:', error);
+                saveAlert.className = 'alert alert-danger';
+                saveAlert.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Terjadi kesalahan saat sinkronisasi ke Cloud. Data tersimpan secara lokal.';
+                saveAlert.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                setTimeout(() => saveAlert.style.display = 'none', 5000);
+            }
         });
     </script>
 </body>
