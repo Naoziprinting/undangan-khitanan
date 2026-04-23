@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Gavin & Azka</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #D4AF37;
+            --secondary: #1a1a1a;
+            --light: #ffffff;
+            --gray: #888888;
+            --gradient: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --radius: 20px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--secondary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .admin-card {
+            background: var(--light);
+            width: 100%;
+            max-width: 800px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-header {
+            background: var(--gradient);
+            padding: 40px;
+            color: white;
+            text-align: center;
+        }
+
+        .card-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .card-content {
+            padding: 40px;
+        }
+
+        /* Login Styles */
+        #loginSection {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            background: var(--gradient);
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Dashboard Styles */
+        #dashboardSection {
+            display: none;
+        }
+
+        .grid-editor {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .editor-box {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #eee;
+        }
+
+        .editor-box h3 {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #ef4444;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #22c55e;
+            border: 1px solid #bbf7d0;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .logout-btn {
+            background: #eee;
+            color: #666;
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #e74c3c;
+            color: white;
+        }
+
+        /* Per-field Toggles Styling */
+        .label-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .label-wrapper label {
+            margin-bottom: 0 !important;
+        }
+
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            color: var(--gray);
+            background: #fff;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-wrapper:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .toggle-wrapper input {
+            cursor: pointer;
+            width: 14px;
+            height: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-card">
+        <div class="card-header">
+            <h1>Editor Undangan</h1>
+            <p>Kelola konten undangan Anda dengan mudah</p>
+        </div>
+
+        <div class="card-content">
+            <!-- Login Section -->
+            <div id="loginSection">
+                <div id="loginAlert" class="alert alert-error">Username atau password salah!</div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="username" class="form-control" placeholder="Masukkan username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="Masukkan password" required>
+                    </div>
+                    <button type="submit" class="btn">Masuk ke Panel</button>
+                </form>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div id="dashboardSection">
+                <div class="header-actions">
+                    <h2>Dashboard Konten</h2>
+                    <a href="#" id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+                </div>
+
+                <div id="saveAlert" class="alert alert-success">Perubahan berhasil disimpan!</div>
+
+                <form id="settingsForm">
+                    <div class="grid-editor">
+                        <!-- Informasi Utama -->
+                        <div class="editor-box">
+                            <h3><i class="fas fa-info-circle"></i> Informasi Utama</h3>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>Nama Anak (Panggilan)</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_hero_names" checked> <span>Tampil</span></div>
+                                </div>
+                                <input type="text" name="hero_names" class="form-control" value="Gavin & Azka">
+                            </div>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>Nama Lengkap (Detail Profil)</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_child_fullname" checked> <span>Tampil</span></div>
+                                </div>
+                                <input type="text" name="child_fullname" class="form-control" value="Gavindra Pradipta Fadliant">
+                            </div>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>Info Anak (Anak ke-)</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_child_info" checked> <span>Tampil</span></div>
+                                </div>
+                                <input type="text" name="child_info" class="form-control" value="Putra pertama dari pasangan Bapak Ridho Fadlianto & Ibu Lailatul Mufidah (Titin)">
+                            </div>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>Tagline</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_hero_tagline" checked> <span>Tampil</span></div>
+                                </div>
+                                <input type="text" name="hero_tagline" class="form-control" value="Walimatul Khitan">
+                            </div>
+                        </div>
+
+                        <!-- Orang Tua & Keluarga -->
+                        <div class="editor-box">
+                            <h3><i class="fas fa-users"></i> Orang Tua & Keluarga</h3>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>Nama Ayah</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_father_name" checked> <span>Tampil</span></div>
+                                </div>
+                                <input type="text" name="father_name" class="form-control" value="Bapak Ridho Fadlianto">
+                            </div>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>Nama Ibu</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_mother_name" checked> <span>Tampil</span></div>
+                                </div>
+                                <input type="text" name="mother_name" class="form-control" value="Ibu Lailatul Mufidah (Titin)">
+                            </div>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>Keluarga Besar (Footer)</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_footer_family" checked> <span>Tampil</span></div>
+                                </div>
+                                <input type="text" name="footer_family" class="form-control" value="Keluarga Besar Bapak Ridho Fadlianto & Ibu Lailatul Mufidah (Titin) (Ibu Yayuk)">
+                            </div>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>Turut Mengundang</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_invitees" checked> <span>Tampil</span></div>
+                                </div>
+                                <textarea name="invitees" class="form-control" rows="4" placeholder="Pisahkan dengan baris baru"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Waktu & Tempat -->
+                        <div class="editor-box">
+                            <h3><i class="fas fa-calendar-alt"></i> Waktu & Tempat</h3>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>Hari & Tanggal (Teks)</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_event_date" checked> <span>Tampil</span></div>
+                                </div>
+                                <input type="text" name="event_date" class="form-control" value="Sabtu, 04 April 2026">
+                            </div>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>Tanggal ISO (Countdown)</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_countdown" checked> <span>Tampil</span></div>
+                                </div>
+                                <input type="text" name="event_date_iso" class="form-control" value="2026-04-04T08:00:00">
+                            </div>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>Waktu Acara</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_event_time" checked> <span>Tampil</span></div>
+                                </div>
+                                <input type="text" name="event_time" class="form-control" value="Bebas">
+                            </div>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>Hiburan</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_entertainment" checked> <span>Tampil</span></div>
+                                </div>
+                                <input type="text" name="entertainment" class="form-control" value="Elekton Plus">
+                            </div>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>Nama Lokasi</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_event_location" checked> <span>Tampil</span></div>
+                                </div>
+                                <input type="text" name="event_location" class="form-control" value="Ds. Tromposari RT 07 / RW 03">
+                            </div>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>URL Maps (Iframe)</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_map" checked> <span>Tampil</span></div>
+                                </div>
+                                <textarea name="map_iframe_url" class="form-control" rows="3">https://www.google.com/maps/embed?pb=!4v1772697488612!6m8!1m7!1sZEYMKTtiMtZpwYzSKdLMnw!2m2!1d-7.563898999010965!2d112.7283382156152!3f137.56!4f-6.040000000000006!5f0.7820865974627469</textarea>
+                            </div>
+                        </div>
+
+                        <!-- Foto & Galeri -->
+                        <div class="editor-box">
+                            <h3><i class="fas fa-camera"></i> Foto & Media</h3>
+                            <div class="form-group">
+                                <label>Foto Sampul / Background (Link Drive)</label>
+                                <input type="text" name="photo_cover" class="form-control" placeholder="Link Google Drive untuk Intro & Hero">
+                            </div>
+                            <div class="form-group">
+                                <label>Foto Profil Anak (Link Drive)</label>
+                                <input type="text" name="photo_about" class="form-control" placeholder="Link Google Drive untuk Bagian Profil">
+                            </div>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>Foto Galeri (Link Drive, Pisahkan dengan Koma)</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_gallery" checked> <span>Tampil</span></div>
+                                </div>
+                                <textarea name="photo_gallery" class="form-control" rows="4" placeholder="Tempel beberapa link Drive dipisahkan koma"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Musik Latar (URL/File)</label>
+                                <input type="text" name="music_url" class="form-control" value="videoplayback (mp3cut.net).mp3">
+                            </div>
+                        </div>
+
+                        <!-- Rekening -->
+                        <div class="editor-box">
+                            <h3><i class="fas fa-wallet"></i> Data Rekening</h3>
+                            <div class="form-group">
+                                <div class="label-wrapper">
+                                    <label>Bank 1 & Logo</label>
+                                    <div class="toggle-wrapper"><input type="checkbox" name="show_gift" checked> <span>Tampil</span></div>
+                                </div>
+                                <select name="bank_bca_logo" class="form-control">
+                                    <option value="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1280px-Bank_Central_Asia.svg.png">BCA</option>
+                                    <option value="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png">Mandiri</option>
+                                    <option value="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/BRI_Logo.svg/1200px-BRI_Logo.svg.png">BRI</option>
+                                    <option value="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Logo_Bank_BNI.svg/1200px-Logo_Bank_BNI.svg.png">BNI</option>
+                                    <option value="https://i.imgur.com/vH9Z6n2.png">DANA</option>
+                                    <option value="https://i.imgur.com/k9v4XG3.png">OVO</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>No. Rekening 1</label>
+                                <input type="text" name="bank_bca" class="form-control" value="8220 987 123">
+                            </div>
+                            <div class="form-group">
+                                <label>Bank 2 & Logo</label>
+                                <select name="bank_mandiri_logo" class="form-control">
+                                    <option value="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png">Mandiri</option>
+                                    <option value="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1280px-Bank_Central_Asia.svg.png">BCA</option>
+                                    <option value="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/BRI_Logo.svg/1200px-BRI_Logo.svg.png">BRI</option>
+                                    <option value="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Logo_Bank_BNI.svg/1200px-Logo_Bank_BNI.svg.png">BNI</option>
+                                    <option value="https://i.imgur.com/vH9Z6n2.png">DANA</option>
+                                    <option value="https://i.imgur.com/k9v4XG3.png">OVO</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>No. Rekening 2</label>
+                                <input type="text" name="bank_mandiri" class="form-control" value="1420 012 345 678">
+                            </div>
+                        </div>
+
+                        <!-- RSVP & Ucapan -->
+                        <div class="editor-box">
+                            <h3><i class="fas fa-comment"></i> RSVP & Ucapan</h3>
+                            <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                                <input type="checkbox" name="show_rsvp" checked style="width: 20px; height: 20px;">
+                                <label style="margin-bottom: 0;">Tampilkan Form RSVP</label>
+                            </div>
+                            <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                                <input type="checkbox" name="show_comments" checked style="width: 20px; height: 20px;">
+                                <label style="margin-bottom: 0;">Tampilkan Kolom Ucapan</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <button type="submit" class="btn">Simpan Semua Perubahan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Kredensial Statis
+        const AUTH = {
+            user: 'admin',
+            pass: 'khitanan2026'
+        };
+
+        const loginForm = document.getElementById('loginForm');
+        const loginSection = document.getElementById('loginSection');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const loginAlert = document.getElementById('loginAlert');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const settingsForm = document.getElementById('settingsForm');
+        const saveAlert = document.getElementById('saveAlert');
+
+        // Check login status
+        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+            showDashboard();
+        }
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            if (user === AUTH.user && pass === AUTH.pass) {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                showDashboard();
+            } else {
+                loginAlert.style.display = 'block';
+                setTimeout(() => loginAlert.style.display = 'none', 3000);
+            }
+        });
+
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            sessionStorage.removeItem('adminLoggedIn');
+            location.reload();
+        });
+
+        function showDashboard() {
+            loginSection.style.display = 'none';
+            dashboardSection.style.display = 'block';
+            loadSettings();
+        }
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const saved = localStorage.getItem('invitationSettings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                Object.keys(settings).forEach(key => {
+                    const inputs = settingsForm.querySelectorAll(`[name="${key}"]`);
+                    inputs.forEach(input => {
+                        if (input.type === 'checkbox') {
+                            input.checked = settings[key] === 'on';
+                        } else {
+                            input.value = settings[key];
+                        }
+                    });
+                });
+            }
+        }
+
+        // Save settings
+        settingsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const settings = {};
+            
+            // Collect all inputs including unchecked checkboxes
+            const inputs = settingsForm.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    settings[input.name] = input.checked ? 'on' : 'off';
+                } else if (input.name) {
+                    settings[input.name] = input.value;
+                }
+            });
+
+            localStorage.setItem('invitationSettings', JSON.stringify(settings));
+            
+            saveAlert.style.display = 'block';
+            setTimeout(() => saveAlert.style.display = 'none', 3000);
+            
+            console.log('Settings Saved:', settings);
+        });
+    </script>
+</body>
+</html>
