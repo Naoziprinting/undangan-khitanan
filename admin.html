@@ -512,6 +512,8 @@
                         }
                     });
                 });
+                // Sync date strings after loading
+                if (typeof updateDateStrings === 'function') updateDateStrings();
             }
         }
 
@@ -577,8 +579,8 @@
             if (!dateVal) return;
 
             const date = new Date(dateVal);
-            // Format: 19 April 2026
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            // Format: Minggu, 19 April 2026
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const indonesianDate = date.toLocaleDateString('id-ID', options);
             
             displayInput.value = indonesianDate;
@@ -586,8 +588,8 @@
 
         datePicker.addEventListener('change', updateDateStrings);
         
-        // Initial sync if data exists
-        setTimeout(updateDateStrings, 1000);
+        // Initial sync
+        updateDateStrings();
     </script>
 </body>
 </html>

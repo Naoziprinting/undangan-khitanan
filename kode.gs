@@ -1199,7 +1199,17 @@ function getSettings() {
     // Mulai dari baris 2 (lewatkan header)
     for (var i = 1; i < data.length; i++) {
       if (data[i][0]) {
-        settings[data[i][0]] = data[i][1];
+        var value = data[i][1];
+        // Jika value adalah Date, ubah ke string agar tidak berformat ISO di client
+        if (value instanceof Date) {
+          // Jika jamnya 0, anggap ini tanggal saja
+          if (value.getHours() === 0 && value.getMinutes() === 0) {
+            value = Utilities.formatDate(value, Session.getScriptTimeZone(), "yyyy-MM-dd");
+          } else {
+            value = Utilities.formatDate(value, Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm:ss");
+          }
+        }
+        settings[data[i][0]] = value;
       }
     }
     

@@ -3012,10 +3012,24 @@
                 }
             }
             
-            // Normalize ISO format
-            targetDateStr = targetDateStr.replace(' ', 'T');
-            
-            const eventDate = new Date(targetDateStr).getTime();
+            // Robust parsing of ISO string (YYYY-MM-DDTHH:mm:ss)
+            let eventDate;
+            try {
+                const parts = targetDateStr.split(/[-T:]/);
+                if (parts.length >= 3) {
+                    const year = parseInt(parts[0]);
+                    const month = parseInt(parts[1]) - 1;
+                    const day = parseInt(parts[2]);
+                    const hour = parseInt(parts[3] || 0);
+                    const minute = parseInt(parts[4] || 0);
+                    const second = parseInt(parts[5] || 0);
+                    eventDate = new Date(year, month, day, hour, minute, second).getTime();
+                } else {
+                    eventDate = new Date(targetDateStr).getTime();
+                }
+            } catch (e) {
+                eventDate = new Date(targetDateStr).getTime();
+            }
             
             // Check if date is valid
             if (isNaN(eventDate)) {
