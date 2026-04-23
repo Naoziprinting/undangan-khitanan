@@ -3762,6 +3762,10 @@
                     const iframe = document.getElementById('map_iframe');
                     if (iframe) iframe.src = settings.map_iframe_url;
                 }
+                if (settings.map_direct_url) {
+                    const mapLink = document.getElementById('map_link');
+                    if (mapLink) mapLink.href = settings.map_direct_url;
+                }
                 if (settings.show_map === 'off') {
                     const mapSection = document.getElementById('location');
                     if (mapSection) mapSection.style.display = 'none';
