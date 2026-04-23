@@ -325,18 +325,17 @@
                             <h3><i class="fas fa-calendar-alt"></i> Waktu & Tempat</h3>
                             <div class="form-group">
                                 <div class="label-wrapper">
-                                    <label>Hari & Tanggal (Teks)</label>
+                                    <label>Pilih Tanggal Acara</label>
                                     <div class="toggle-wrapper"><input type="checkbox" name="show_event_date" checked> <span>Tampil</span></div>
                                 </div>
-                                <input type="text" name="event_date" class="form-control" value="Sabtu, 04 April 2026">
+                                <input type="date" id="event_date_picker" name="event_date_iso" class="form-control" value="2026-04-04">
                             </div>
                             <div class="form-group">
-                                <div class="label-wrapper">
-                                    <label>Tanggal ISO (Countdown)</label>
-                                    <div class="toggle-wrapper"><input type="checkbox" name="show_countdown" checked> <span>Tampil</span></div>
-                                </div>
-                                <input type="text" name="event_date_iso" class="form-control" value="2026-04-04T08:00:00">
+                                <label>Pilih Jam Acara</label>
+                                <input type="time" id="event_time_picker" name="event_time_val_iso" class="form-control" value="08:00">
                             </div>
+                            <!-- Hidden input for generated display string -->
+                            <input type="hidden" name="event_date" id="event_date_display">
                             <div class="form-group">
                                 <div class="label-wrapper">
                                     <label>Waktu Acara</label>
@@ -567,6 +566,28 @@
                 setTimeout(() => saveAlert.style.display = 'none', 5000);
             }
         });
+
+        // Date Picker Sync
+        const datePicker = document.getElementById('event_date_picker');
+        const timePicker = document.getElementById('event_time_picker');
+        const displayInput = document.getElementById('event_date_display');
+
+        function updateDateStrings() {
+            const dateVal = datePicker.value; // yyyy-mm-dd
+            if (!dateVal) return;
+
+            const date = new Date(dateVal);
+            // Format: 19 April 2026
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const indonesianDate = date.toLocaleDateString('id-ID', options);
+            
+            displayInput.value = indonesianDate;
+        }
+
+        datePicker.addEventListener('change', updateDateStrings);
+        
+        // Initial sync if data exists
+        setTimeout(updateDateStrings, 1000);
     </script>
 </body>
 </html>

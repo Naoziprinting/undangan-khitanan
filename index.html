@@ -3003,13 +3003,17 @@
                 const settings = JSON.parse(saved);
                 if (settings.event_date_iso) {
                     targetDateStr = settings.event_date_iso;
+                    // Combine with time if available, otherwise default to 08:00
+                    if (settings.event_time_val_iso) {
+                        targetDateStr += 'T' + settings.event_time_val_iso;
+                    } else if (!targetDateStr.includes('T')) {
+                        targetDateStr += 'T08:00:00';
+                    }
                 }
             }
             
-            // Fix format for Safari and older browsers (replace space with T if needed)
-            if (targetDateStr.includes(' ') && !targetDateStr.includes('T')) {
-                targetDateStr = targetDateStr.replace(' ', 'T');
-            }
+            // Normalize ISO format
+            targetDateStr = targetDateStr.replace(' ', 'T');
             
             const eventDate = new Date(targetDateStr).getTime();
             
