@@ -390,8 +390,8 @@
             font-family: 'Great Vibes', cursive;
             font-size: 5.5rem;
             margin-bottom: 20px;
-            color: var(--primary);
-            text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.4);
+            color: #FFFFFF; /* High contrast white */
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.4);
             letter-spacing: 3px;
             line-height: 1.1;
         }
@@ -401,7 +401,8 @@
             font-size: 2.8rem;
             margin-bottom: 35px;
             font-weight: 500;
-            color: var(--light);
+            color: #D4AF37; /* Elegant Gold */
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
             position: relative;
             display: inline-block;
             padding-bottom: 15px;
@@ -2474,7 +2475,7 @@
                 <div class="detail-card">
                     <i class="fas fa-calendar-alt"></i>
                     <h3>Hari & Tanggal</h3>
-                    <p>Sabtu, 04 April 2026</p>
+                    <p id="event_date_val">Sabtu, 04 April 2026</p>
                 </div>
                 
                 <div class="detail-card">
@@ -3706,13 +3707,18 @@
 
                 // Event Details
                 if (settings.event_date) {
-                    const dateElements = document.querySelectorAll('.detail-card p');
-                    dateElements.forEach(el => {
-                        // Check if it looks like a date or has the placeholder text
-                        if (el.textContent.includes('2026') || el.textContent.includes('April') || el.id === 'event_date_val') {
-                            el.textContent = settings.event_date;
-                        }
-                    });
+                    const dateValEl = document.getElementById('event_date_val');
+                    if (dateValEl) {
+                        dateValEl.textContent = settings.event_date;
+                    } else {
+                        // Fallback for older versions
+                        const dateElements = document.querySelectorAll('.detail-card p');
+                        dateElements.forEach(el => {
+                            if (el.textContent.includes('2026') || el.textContent.includes('April')) {
+                                el.textContent = settings.event_date;
+                            }
+                        });
+                    }
                 }
                 
                 // Update RSVP Deadline (7 days before event)

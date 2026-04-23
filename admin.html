@@ -451,153 +451,162 @@
     </div>
 
     <script>
-        // Kredensial Statis
-        const AUTH = {
-            user: 'admin',
-            pass: 'khitanan2026'
-        };
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxwqk6n_92StNVmDJPunlA--rMwNuusYcKqFnY2DPesPla8ByVc83mRhlyeRc157Z-n/exec';
+        document.addEventListener('DOMContentLoaded', () => {
+            // Kredensial Statis
+            const AUTH = {
+                user: 'admin',
+                pass: 'khitanan2026'
+            };
+            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxwqk6n_92StNVmDJPunlA--rMwNuusYcKqFnY2DPesPla8ByVc83mRhlyeRc157Z-n/exec';
 
-        const loginForm = document.getElementById('loginForm');
-        const loginSection = document.getElementById('loginSection');
-        const dashboardSection = document.getElementById('dashboardSection');
-        const loginAlert = document.getElementById('loginAlert');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const settingsForm = document.getElementById('settingsForm');
-        const saveAlert = document.getElementById('saveAlert');
+            const loginForm = document.getElementById('loginForm');
+            const loginSection = document.getElementById('loginSection');
+            const dashboardSection = document.getElementById('dashboardSection');
+            const loginAlert = document.getElementById('loginAlert');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const settingsForm = document.getElementById('settingsForm');
+            const saveAlert = document.getElementById('saveAlert');
 
-        // Date Picker Sync & Formatting
-        function updateDateStrings() {
-            const datePicker = document.getElementById('event_date_picker');
-            const displayInput = document.getElementById('event_date_display');
-            
-            if (!datePicker || !displayInput) return;
-            
-            const dateVal = datePicker.value; // yyyy-mm-dd
-            if (!dateVal) return;
-
-            const date = new Date(dateVal);
-            // Format: Sabtu, 04 April 2026
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const indonesianDate = date.toLocaleDateString('id-ID', options);
-            
-            displayInput.value = indonesianDate;
-        }
-
-        // Load settings from localStorage
-        function loadSettings() {
-            const saved = localStorage.getItem('invitationSettings');
-            if (saved) {
-                const settings = JSON.parse(saved);
+            function updateDateStrings() {
+                const datePicker = document.getElementById('event_date_picker');
+                const displayInput = document.getElementById('event_date_display');
                 
-                if (settings.event_date_iso) {
-                    let targetDateStr = settings.event_date_iso.split('T')[0];
-                    if (settings.event_time_val_iso) {
-                        targetDateStr += 'T' + settings.event_time_val_iso;
-                    } else {
-                        targetDateStr += 'T08:00:00';
-                    }
+                if (!datePicker || !displayInput) return;
+                
+                const dateVal = datePicker.value;
+                if (!dateVal) return;
+
+                try {
+                    const date = new Date(dateVal);
+                    if (isNaN(date.getTime())) return;
+                    
+                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    const indonesianDate = date.toLocaleDateString('id-ID', options);
+                    displayInput.value = indonesianDate;
+                    console.log('Updated Date Display:', indonesianDate);
+                } catch (e) {
+                    console.error('Date formatting error:', e);
                 }
-                
-                Object.keys(settings).forEach(key => {
-                    const inputs = settingsForm.querySelectorAll(`[name="${key}"]`);
-                    inputs.forEach(input => {
-                        if (input.type === 'checkbox') {
-                            input.checked = settings[key] === 'on';
-                        } else {
-                            input.value = settings[key];
-                        }
-                    });
-                });
-                // Sync date strings after loading
-                updateDateStrings();
             }
-        }
 
-        function showDashboard() {
-            loginSection.style.display = 'none';
-            dashboardSection.style.display = 'block';
-            loadSettings();
-            
-            // Add event listeners for pickers after they are visible
-            const dp = document.getElementById('event_date_picker');
-            if (dp) dp.addEventListener('change', updateDateStrings);
-        }
+            function loadSettings() {
+                try {
+                    const saved = localStorage.getItem('invitationSettings');
+                    if (saved) {
+                        const settings = JSON.parse(saved);
+                        Object.keys(settings).forEach(key => {
+                            const inputs = settingsForm.querySelectorAll(`[name="${key}"]`);
+                            inputs.forEach(input => {
+                                if (input.type === 'checkbox') {
+                                    input.checked = settings[key] === 'on';
+                                } else {
+                                    input.value = settings[key];
+                                }
+                            });
+                        });
+                        updateDateStrings();
+                    }
+                } catch (e) {
+                    console.error('Load settings error:', e);
+                }
+            }
 
-        // Check login status
-        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-            showDashboard();
-        }
+            function showDashboard() {
+                if (loginSection) loginSection.style.display = 'none';
+                if (dashboardSection) dashboardSection.style.display = 'block';
+                loadSettings();
+                
+                const dp = document.getElementById('event_date_picker');
+                if (dp) dp.addEventListener('change', updateDateStrings);
+            }
 
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
-
-            if (user === AUTH.user && pass === AUTH.pass) {
-                sessionStorage.setItem('adminLoggedIn', 'true');
+            // Init Login State
+            if (sessionStorage.getItem('adminLoggedIn') === 'true') {
                 showDashboard();
             } else {
-                loginAlert.style.display = 'block';
-                setTimeout(() => loginAlert.style.display = 'none', 3000);
+                if (loginSection) loginSection.style.display = 'block';
             }
-        });
 
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            sessionStorage.removeItem('adminLoggedIn');
-            location.reload();
-        });
+            if (loginForm) {
+                loginForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const user = document.getElementById('username').value;
+                    const pass = document.getElementById('password').value;
 
-        // Save settings
-        settingsForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const submitBtn = settingsForm.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn.innerHTML;
-            
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan ke Cloud...';
-            
-            const settings = {};
-            
-            // Collect all inputs including unchecked checkboxes
-            const inputs = settingsForm.querySelectorAll('input, textarea, select');
-            inputs.forEach(input => {
-                if (input.type === 'checkbox') {
-                    settings[input.name] = input.checked ? 'on' : 'off';
-                } else if (input.name) {
-                    settings[input.name] = input.value;
-                }
-            });
-
-            // Local save (fast)
-            localStorage.setItem('invitationSettings', JSON.stringify(settings));
-            
-            try {
-                // Cloud save (global sync)
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'saveSettings',
-                        settings: settings
-                    })
+                    if (user === AUTH.user && pass === AUTH.pass) {
+                        sessionStorage.setItem('adminLoggedIn', 'true');
+                        showDashboard();
+                    } else {
+                        if (loginAlert) {
+                            loginAlert.style.display = 'block';
+                            setTimeout(() => loginAlert.style.display = 'none', 3000);
+                        }
+                    }
                 });
-                
-                // Show success alert
-                saveAlert.className = 'alert alert-success';
-                saveAlert.innerHTML = '<i class="fas fa-check-circle"></i> Berhasil! Perubahan telah tersimpan di Cloud dan akan terlihat di semua browser.';
-                saveAlert.style.display = 'block';
-            } catch (error) {
-                console.error('Cloud save error:', error);
-                saveAlert.className = 'alert alert-danger';
-                saveAlert.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Terjadi kesalahan saat sinkronisasi ke Cloud. Data tersimpan secara lokal.';
-                saveAlert.style.display = 'block';
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-                setTimeout(() => saveAlert.style.display = 'none', 5000);
+            }
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    sessionStorage.removeItem('adminLoggedIn');
+                    location.reload();
+                });
+            }
+
+            if (settingsForm) {
+                settingsForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    // Ensure date string is fresh
+                    updateDateStrings();
+                    
+                    const submitBtn = settingsForm.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+                    
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+                    
+                    const settings = {};
+                    const inputs = settingsForm.querySelectorAll('input, textarea, select');
+                    inputs.forEach(input => {
+                        if (input.type === 'checkbox') {
+                            settings[input.name] = input.checked ? 'on' : 'off';
+                        } else if (input.name) {
+                            settings[input.name] = input.value;
+                        }
+                    });
+
+                    localStorage.setItem('invitationSettings', JSON.stringify(settings));
+                    
+                    try {
+                        await fetch(GOOGLE_SCRIPT_URL, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                action: 'saveSettings',
+                                settings: settings
+                            })
+                        });
+                        
+                        if (saveAlert) {
+                            saveAlert.className = 'alert alert-success';
+                            saveAlert.innerHTML = '<i class="fas fa-check-circle"></i> Berhasil disimpan ke Cloud!';
+                            saveAlert.style.display = 'block';
+                        }
+                    } catch (error) {
+                        console.error('Cloud save error:', error);
+                        if (saveAlert) {
+                            saveAlert.className = 'alert alert-danger';
+                            saveAlert.innerHTML = 'Gagal sinkronisasi ke Cloud. Data hanya tersimpan di browser ini.';
+                            saveAlert.style.display = 'block';
+                        }
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                        setTimeout(() => { if (saveAlert) saveAlert.style.display = 'none'; }, 5000);
+                    }
+                });
             }
         });
     </script>
